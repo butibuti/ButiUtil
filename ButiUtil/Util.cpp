@@ -91,12 +91,31 @@ void ButiEngine::ThrowButiException_Runtime(const std::string & meesage1, const 
 	throw std::runtime_error(outputMessage);
 }
 
-std::shared_ptr< std::random_device> ButiEngine::ButiRandom::shp_rnd_device = nullptr;
-std::shared_ptr<std::mt19937>ButiEngine::ButiRandom::shp_mt = nullptr;// 
-std::shared_ptr< std::uniform_int_distribution<>> ButiEngine::ButiRandom::shp_randRange = nullptr;
+std::shared_ptr< std::random_device> shp_rnd_device = nullptr;
+std::shared_ptr<std::mt19937>shp_mt = nullptr;
+std::shared_ptr< std::uniform_int_distribution<>> shp_randRange = nullptr;
+
 void ButiEngine::ButiRandom::Initialize()
 {
 	shp_rnd_device = std::make_shared<std::random_device>();
 	shp_mt = std::make_shared<std::mt19937>((*shp_rnd_device)());
 	shp_randRange = std::make_shared< std::uniform_int_distribution<>>(0, 1);
+
+}
+
+BUTIUTIL_API std::int32_t ButiEngine::ButiRandom::GetInt(const std::int32_t arg_min, const std::int32_t arg_max)
+{
+
+	if (arg_min == arg_max) {
+		return arg_min;
+	}
+	auto min = arg_min,max=arg_max;
+	if (min > max) {
+		auto b = min;
+		min = max;
+		max = min;
+	}
+
+	shp_randRange = std::make_shared< std::uniform_int_distribution<>>(min, max );
+	return (*shp_randRange)(*shp_mt) ;
 }

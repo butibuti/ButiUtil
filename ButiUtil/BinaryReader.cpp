@@ -1,14 +1,14 @@
 #include"stdafx.h"
 #include "BinaryReader.h"
-#include"../zlib/zlib.h"
+#include"../../zlib/zlib.h"
 #pragma comment(lib,"ZDll.lib")
 #include"Util.h"
-
+#include<iostream>
 bool ButiEngine::BinaryReader::ReadStart(const std::string & filePath)
 {
 	fin=std::ifstream (filePath, std::ios::in | std::ios::binary);
 	if (!fin) {
-		std::cout << "ファイルが見つかりません\n";
+		std::cout<< filePath << "が見つかりません"<<std::endl;
 
 		return false;
 	}
@@ -60,20 +60,25 @@ char* ButiEngine::BinaryReader::ReadCharactor()
 	return out;
 }
 
-void* ButiEngine::BinaryReader::ReadData(const unsigned int size)
+void* ButiEngine::BinaryReader::ReadData(const int size)
 {
-	void* out = malloc(size);
+	int readSize = size < 0? GetReamainSize():  size;
 
-	fin.read((char*)out, size);
+
+	void* out = malloc(readSize);
+
+	fin.read((char*)out, readSize);
 
 	return out;
 }
 
-void ButiEngine::BinaryReader::ReadData(char* out, const unsigned int size)
+void ButiEngine::BinaryReader::ReadData(char* out, const int size)
 {
-	out =(char*) malloc(size);
 
-	fin.read((char*)out, size);
+	int readSize = size < 0 ? GetReamainSize() : size;
+	out =(char*) malloc(readSize);
+
+	fin.read((char*)out, readSize);
 }
 
 void ButiEngine::BinaryReader::ReadDefrateData(const unsigned int arg_compressedSize, unsigned int uncompressedSize, const unsigned int arraySize, unsigned char* outBuffer)
@@ -137,6 +142,15 @@ std::wstring ButiEngine::BinaryReader::ReadShift_jis(const unsigned int count)
 	
 	free(readChars);
 	return Util::StringToWString(out);
+}
+
+int ButiEngine::BinaryReader::GetReamainSize()
+{
+	auto current = fin.tellg();
+	fin.seekg(0,std::ios::end);
+	auto output = fin.tellg() - current;
+	fin.seekg(current);
+	return (int)output;
 }
 
 int ButiEngine::BinaryHelper::SwapByte(const int arg_int)
@@ -262,7 +276,7 @@ bool ButiEngine::BinaryWriter::WriteStart(const std::string & filePath)
 {
 	fout = std::ofstream(filePath, std::ios::out | std::ios::binary);
 	if (!fout) {
-		std::cout << "ファイルが見つかりません\n";
+		std::cout<< filePath << "が見つかりません"<<std::endl;
 		return false;
 	}
 	return true;

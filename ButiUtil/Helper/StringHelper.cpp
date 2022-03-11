@@ -1,6 +1,7 @@
 #include"stdafx.h"
 #include "StringHelper.h"
 
+static const std::string backSlash = "\\";
 StringHelper::StringHelper()
 {
 }
@@ -13,10 +14,12 @@ StringHelper::~StringHelper()
 std::vector<std::string> StringHelper::Split(const std::string& source, const std::string& cuttingSouece)
 {
 	auto output = std::vector<std::string>();
-	int first = 0;
-	int last = source.find_first_of(cuttingSouece);
-	if (last == std::string::npos)
+	std::int32_t first = 0;
+	std::int32_t last = source.find_first_of(cuttingSouece);
+	if (last == std::string::npos) {
+		output.push_back(source);
 		return output;
+	}
 	while (first < source.size())
 	{
 		auto subString = source.substr(first, last - first);
@@ -50,17 +53,17 @@ std::string StringHelper::BackIdentifer(const std::string& source, const std::st
 {
 	enum findProgress{findchar, initSpace,identiferchar,endspace };
 	findProgress progress = findchar;
-	int spaceCount = 0;
+	std::int32_t spaceCount = 0;
 
 	auto endPos = source.find(findSouece);
-	size_t pos=endPos;
+	std::uint64_t pos=endPos;
 	if ( endPos == std::string::npos) {
 		return "";
 	}
 	while (progress != endspace||pos<0) {
 
-		char serch = source[pos];
-		if (serch == ' ' || serch == '\t' || serch == '\n') {
+		char search = source[pos];
+		if (search == ' ' || search == '\t' || search == '\n') {
 			if (progress == findchar) {
 				progress = initSpace;
 			}
@@ -94,7 +97,7 @@ std::string StringHelper::Remove(const std::string& source, const std::string& r
 		return source;
 	}
 	std::string output = source;
-	size_t pos = output.find(removeSouece);
+	std::uint64_t pos = output.find(removeSouece);
 	while (pos != std::string::npos)
 	{
 		output.erase(pos, removeSouece.size());
@@ -103,7 +106,7 @@ std::string StringHelper::Remove(const std::string& source, const std::string& r
 	return output;
 }
 
-std::string StringHelper::Remove(const std::string& source, const unsigned int removeIndex, const unsigned int removeRange)
+std::string StringHelper::Remove(const std::string& source, const std::uint32_t removeIndex, const std::uint32_t removeRange)
 {
 	std::string output = source;
 	output.erase(removeIndex, removeRange);
@@ -173,23 +176,30 @@ void StringHelper::WStringToSafetyConvert(std::wstring& source)
 
 std::string StringHelper::GetDirectory(const std::string& source)
 {
-	if (!Contains(source, "/")) {
+	if (!Contains(source, "/")&&!Contains(source,backSlash)) {
 		return "";
 	}
 
-	if (source[source.size() - 1] == '/') {
+	if (source[source.size() - 1] == '/'||source.substr(source.size()-2,2 ) == backSlash) {
 		return source;
 	}
 
 	auto splited = Split(source, "/");
-
+	{
+		std::vector<std::string> backSlashSplit;
+		for (auto itr = splited.begin(), end = splited.end() ; itr != end; itr++) {
+			auto sp = Split(*itr, backSlash);
+			backSlashSplit.insert(backSlashSplit.end(), sp.begin(), sp.end());
+		}
+		splited = backSlashSplit;
+	}
 	std::string out;
 
 	if ( splited.begin() == (splited.end() - 1)) {
 		return source;
 	}
 
-	for (auto itr = splited.begin(); itr != splited.end() - 1; itr++) {
+	for (auto itr = splited.begin(),end= splited.end() - 1; itr != end; itr++) {
 		out += (*itr) + "/";
 	}
 
@@ -200,10 +210,19 @@ std::string StringHelper::GetDirectory(const std::string& source)
 
 std::string StringHelper::GetFileName(const std::string& source, const bool isContainExtension)
 {
-	if (!Contains(source, "/")) {
-		return source;
+	if (!Contains(source, "/") && !Contains(source, backSlash)) {
+		return "";
 	}
+
 	auto splited = Split(source, "/");
+	{
+		std::vector<std::string> backSlashSplit;
+		for (auto itr = splited.begin(), end = splited.end(); itr != end; itr++) {
+			auto sp = Split(*itr, backSlash);
+			backSlashSplit.insert(backSlashSplit.end(), sp.begin(), sp.end());
+		}
+		splited = backSlashSplit;
+	}
 
 	std::string out = *splited.rbegin();
 
@@ -215,5 +234,10 @@ std::string StringHelper::GetFileName(const std::string& source, const bool isCo
 	out = Split(out, ".").at(0);
 
 	return out;
+}
+
+std::string StringHelper::RemoveExtension(const std::string& source)
+{
+	return Split(source, ".").at(0);
 }
 
