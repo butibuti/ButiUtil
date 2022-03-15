@@ -1,19 +1,15 @@
-﻿// pch.h: プリコンパイル済みヘッダー ファイルです。
-// 次のファイルは、その後のビルドのビルド パフォーマンスを向上させるため 1 回だけコンパイルされます。
-// コード補完や多くのコード参照機能などの IntelliSense パフォーマンスにも影響します。
-// ただし、ここに一覧表示されているファイルは、ビルド間でいずれかが更新されると、すべてが再コンパイルされます。
-// 頻繁に更新するファイルをここに追加しないでください。追加すると、パフォーマンス上の利点がなくなります。
+﻿
 
 #ifndef STDAFX_H
 #define STDAFX_H
 
-// プリコンパイルするヘッダーをここに追加します
-#include "Util.h"
+#define WIN32_LEAN_AND_MEAN 
+#pragma once
+#include<string>
+#include<ctime>
+#include<memory>
+#include<Windows.h>
 
-#ifdef BUTIUTILDLL_EXPORTS
-#define BUTIUTIL_API __declspec(dllexport)
-#else
-#define BUTIUTIL_API __declspec(dllimport)
-#endif
+#include<fstream>
 
 #endif //STDAFX_H

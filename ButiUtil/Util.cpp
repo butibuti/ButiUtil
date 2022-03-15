@@ -1,6 +1,7 @@
 #include"stdafx.h"
-//#include"../../Header/GameParts/Application.h"
+
 #include "Util.h"
+#include<random>
 
 
 
@@ -103,7 +104,8 @@ void ButiEngine::ButiRandom::Initialize()
 
 }
 
-BUTIUTIL_API std::int32_t ButiEngine::ButiRandom::GetInt(const std::int32_t arg_min, const std::int32_t arg_max)
+
+std::int32_t ButiEngine::ButiRandom::GetInt(const std::int32_t arg_min, const std::int32_t arg_max)
 {
 
 	if (arg_min == arg_max) {

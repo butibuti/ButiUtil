@@ -43,17 +43,17 @@ public:
 class CSVReader
 {
 public:
-	BUTIUTIL_API ~CSVReader();
-	BUTIUTIL_API static std::shared_ptr<CSVData> GetMatrix(const std::string& filePath);
+	~CSVReader();
+	static std::shared_ptr<CSVData> GetMatrix(const std::string& filePath);
 private:
-	BUTIUTIL_API CSVReader();
+	CSVReader();
 };
 class CSVWriter
 {
 public:
-	BUTIUTIL_API ~CSVWriter();
-	BUTIUTIL_API static void Write(CSVData arg_csvData, const std::string& filePath);
+	~CSVWriter();
+	static void Write(CSVData arg_csvData, const std::string& filePath);
 private:
-	BUTIUTIL_API CSVWriter();
+	CSVWriter();
 };
 }

@@ -4,7 +4,7 @@
 #include <cmath>
 namespace ButiEngine {
 
-#define PI 3.141592653589793f
+constexpr float PI = 3.141592653589793f;
 
 namespace Easing {
 enum class EasingType {

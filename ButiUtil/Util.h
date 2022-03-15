@@ -1,24 +1,17 @@
 #ifndef UTIL_H
 #define UTIL_H
 #define WIN32_LEAN_AND_MEAN 
-
-#ifdef BUTIUTILDLL_EXPORTS
-#define BUTIUTIL_API __declspec(dllexport)
-#else
-#define BUTIUTIL_API __declspec(dllimport)
-#endif
 #pragma once
 #include<string>
 #include<ctime>
-#include<random>
 #include<memory>
 #include<Windows.h>
 
 #include<fstream>
 namespace ButiEngine {
 namespace BitFlag {
-const unsigned int FLAG_MAX = 16;
-const unsigned int BIT_FLAG[]{ (1 << 0),(1 << 1),(1 << 2),(1 << 3),(1 << 4),(1 << 5),(1 << 6),(1 << 7),(1 << 8),(1 << 9),(1 << 10),(1 << 11),(1 << 12),(1 << 13),(1 << 14),(1 << 15) };
+constexpr std::uint32_t FLAG_MAX = 16;
+constexpr std::uint32_t BIT_FLAG[]{ (1 << 0),(1 << 1),(1 << 2),(1 << 3),(1 << 4),(1 << 5),(1 << 6),(1 << 7),(1 << 8),(1 << 9),(1 << 10),(1 << 11),(1 << 12),(1 << 13),(1 << 14),(1 << 15) };
 }
 class IApplication;
 namespace Util
@@ -37,24 +30,24 @@ private:
 	T** p_memoryAddress;
 };
 
-inline bool GetBitFlag(const int arg_flag, const int arg_bitIndex) {
+inline bool GetBitFlag(const std::int32_t arg_flag, const std::int32_t arg_bitIndex) {
 	if (arg_bitIndex >= 16 || arg_bitIndex < 0) {
 		return false;
 	}
 	return arg_flag & BitFlag::BIT_FLAG[arg_bitIndex];
 }
-inline char GetBitNum(const char arg_byte, const int arg_readRange) {
+inline std::int8_t GetBitNum(const std::int8_t arg_byte, const std::int32_t arg_readRange) {
 
-	char out = arg_byte;
+	std::int8_t out = arg_byte;
 	out <<= (8 - arg_readRange);
 	out >>= (8 - arg_readRange);
 
 
 	return std::abs(out);
 }
-inline char GetBitNum(const char arg_byte, const int arg_readRange, const int arg_offset) {
+inline std::int8_t GetBitNum(const std::int8_t arg_byte, const std::int32_t arg_readRange, const std::int32_t arg_offset) {
 
-	char out = arg_byte;
+	std::int8_t out = arg_byte;
 	out >>= (arg_offset);
 	out <<= (8 - arg_readRange);
 	out >>= (8 - arg_readRange);
@@ -63,9 +56,9 @@ inline char GetBitNum(const char arg_byte, const int arg_readRange, const int ar
 	return std::abs(out);
 }
 
-extern BUTIUTIL_API void WStringtoMultiByte(const std::wstring& src, std::string& dest);
-extern BUTIUTIL_API std::string WStringToString(std::wstring oWString);
-extern BUTIUTIL_API std::wstring StringToWString(std::string oString);
+void WStringtoMultiByte(const std::wstring& src, std::string& dest);
+std::string WStringToString(std::wstring oWString);
+std::wstring StringToWString(std::string oString);
 static void MultiBytetoWString(const std::string& src, std::wstring& dest) {
 	size_t i;
 	wchar_t* WCstr = new wchar_t[src.length() + 1];
@@ -82,7 +75,7 @@ static void MultiBytetoWString(const std::string& src, std::wstring& dest) {
 
 static std::string ToUTF8(const std::string& srcSjis) {
 	//Unicodeへ変換後の文字列長を得る
-	int lenghtUnicode = MultiByteToWideChar(CP_THREAD_ACP, 0, srcSjis.c_str(), srcSjis.size() + 1, NULL, 0);
+	std::int32_t lenghtUnicode = MultiByteToWideChar(CP_THREAD_ACP, 0, srcSjis.c_str(), srcSjis.size() + 1, NULL, 0);
 
 	//必要な分だけUnicode文字列のバッファを確保
 	wchar_t* bufUnicode = new wchar_t[lenghtUnicode];
@@ -91,7 +84,7 @@ static std::string ToUTF8(const std::string& srcSjis) {
 	MultiByteToWideChar(CP_THREAD_ACP, 0, srcSjis.c_str(), srcSjis.size() + 1, bufUnicode, lenghtUnicode);
 
 	//UTF8へ変換後の文字列長を得る
-	int lengthUTF8 = WideCharToMultiByte(CP_UTF8, 0, bufUnicode, -1, NULL, 0, NULL, NULL);
+	std::int32_t lengthUTF8 = WideCharToMultiByte(CP_UTF8, 0, bufUnicode, -1, NULL, 0, NULL, NULL);
 
 	//必要な分だけUTF8文字列のバッファを確保
 	char* bufUTF8 = new char[lengthUTF8];
@@ -108,7 +101,7 @@ static std::string ToUTF8(const std::string& srcSjis) {
 }
 static std::string UTF8ToMultiByte(const std::string& srcUTF8) {
 	//Unicodeへ変換後の文字列長を得る
-	int lenghtUnicode = MultiByteToWideChar(CP_UTF8, 0, srcUTF8.c_str(), srcUTF8.size() + 1, NULL, 0);
+	std::int32_t lenghtUnicode = MultiByteToWideChar(CP_UTF8, 0, srcUTF8.c_str(), srcUTF8.size() + 1, NULL, 0);
 
 	//必要な分だけUnicode文字列のバッファを確保
 	wchar_t* bufUnicode = new wchar_t[lenghtUnicode];
@@ -117,7 +110,7 @@ static std::string UTF8ToMultiByte(const std::string& srcUTF8) {
 	MultiByteToWideChar(CP_UTF8, 0, srcUTF8.c_str(), srcUTF8.size() + 1, bufUnicode, lenghtUnicode);
 
 	//ShiftJISへ変換後の文字列長を得る
-	int lengthSJis = WideCharToMultiByte(CP_THREAD_ACP, 0, bufUnicode, -1, NULL, 0, NULL, NULL);
+	std::int32_t lengthSJis = WideCharToMultiByte(CP_THREAD_ACP, 0, bufUnicode, -1, NULL, 0, NULL, NULL);
 
 	//必要な分だけShiftJIS文字列のバッファを確保
 	char* bufShiftJis = new char[lengthSJis];
@@ -133,7 +126,7 @@ static std::string UTF8ToMultiByte(const std::string& srcUTF8) {
 	return strSJis;
 }
 
-static bool CheckFileExistence(const std::string& arg_filePath) {
+static bool ExistFile(const std::string& arg_filePath) {
 	std::ifstream checkedFile(arg_filePath);
 
 	return checkedFile.is_open();
@@ -150,37 +143,37 @@ static std::string GetStringTypeName() {
 	return typeid(T).name();
 }
 
-static int BitRemoveLeft(const int arg_bit, const int arg_slideSize) {
+static std::int32_t BitRemoveLeft(const std::int32_t arg_bit, const std::int32_t arg_slideSize) {
 
-	int ret = arg_bit;
+	std::int32_t ret = arg_bit;
 	ret <<= arg_slideSize;
 	ret >>= arg_slideSize;
 	return ret;
 }
-static int BitRemoveRight(const int arg_bit, const int arg_slideSize) {
-	int ret = arg_bit;
+static std::int32_t BitRemoveRight(const std::int32_t arg_bit, const std::int32_t arg_slideSize) {
+	std::int32_t ret = arg_bit;
 	ret >>= arg_slideSize;
 	ret <<= arg_slideSize;
 	return ret;
 }
 };
 
-const unsigned int LEVEL_FLAG[]{ (111 << 0),(111 << 3),(111 << 6),(111 << 9),(111 << 12),(111 << 15),(111 << 18),(111 << 21),(111 << 24),(111 << 27), };
-extern class OctreeHelper {
+constexpr std::uint32_t LEVEL_FLAG[]{ (111 << 0),(111 << 3),(111 << 6),(111 << 9),(111 << 12),(111 << 15),(111 << 18),(111 << 21),(111 << 24),(111 << 27), };
+class OctreeHelper {
 public:
-	static inline unsigned int BitSeparate(char n)
+	static inline std::uint32_t BitSeparate(std::int8_t n)
 	{
-		unsigned int s = n;
+		std::uint32_t s = n;
 		s = (s | s << 8) & 0x0000f00f;
 		s = (s | s << 4) & 0x000c30c3;
 		s = (s | s << 2) & 0x00249249;
 		return s;
 	}
-	static inline char GetLevel(const unsigned int& arg_flag, const unsigned char  arg_level) {
-		char out = 1;
-		for (char i = 0; i < arg_level; i++) {
+	static inline std::int8_t GetLevel(const std::uint32_t& arg_flag, const std::uint8_t  arg_level) {
+		std::int8_t out = 1;
+		for (std::int8_t i = 0; i < arg_level; i++) {
 
-			unsigned int Check = (arg_flag >> (i * 3)) & 0x7;
+			std::uint32_t Check = (arg_flag >> (i * 3)) & 0x7;
 			if (Check != 0)
 				out = i + 1;
 		}
@@ -217,9 +210,9 @@ static inline timespec* timespecSubstruction(const struct timespec* A, const str
 }
 }
 
-extern void BUTIUTIL_API ThrowButiException_Runtime(const std::wstring& message1, const std::wstring& message2, const std::wstring& message3);
+static void ThrowButiException_Runtime(const std::wstring& message1, const std::wstring& message2, const std::wstring& message3);
 //throw runtime_error function
-extern void BUTIUTIL_API ThrowButiException_Runtime(const std::string& meesage1, const std::string& message2, const std::string& message3);
+static void ThrowButiException_Runtime(const std::string& meesage1, const std::string& message2, const std::string& message3);
 
 
 template<typename T>
@@ -230,13 +223,13 @@ static std::shared_ptr<T> VoidToShared(const std::shared_ptr<void>& SrcPtr);
 extern class ButiRandom {
 public:
 
-	BUTIUTIL_API static void Initialize();
+	static void Initialize();
 
-	BUTIUTIL_API static std::int32_t GetInt(const std::int32_t arg_min, const std::int32_t arg_max);
+	static std::int32_t GetInt(const std::int32_t arg_min, const std::int32_t arg_max);
 
 	template<class T>
-	inline static T GetRandom(const T arg_min,const T arg_max,const int arg_pase) {
-		return (T) GetInt(arg_min*arg_pase,arg_max*arg_pase) / arg_pase;
+	static T GetRandom(const T arg_min,const T arg_max,const std::int32_t arg_pase =1) {
+		return static_cast<T> (GetInt(arg_min*arg_pase,arg_max*arg_pase)) / arg_pase;
 	};
 
 private:
@@ -244,13 +237,13 @@ private:
 	~ButiRandom() {};
 };
 template<typename T>
-std::shared_ptr<void> SharedPtrToVoid(const std::shared_ptr<T>& SrcPtr)
+inline std::shared_ptr<void> SharedPtrToVoid(const std::shared_ptr<T>& SrcPtr)
 {
 	std::shared_ptr<void> RetPtr = std::static_pointer_cast<void>(SrcPtr);
 	return RetPtr;
 }
 template<typename T>
-std::shared_ptr<T> VoidToShared(const std::shared_ptr<void>& SrcPtr)
+inline std::shared_ptr<T> VoidToShared(const std::shared_ptr<void>& SrcPtr)
 {
 	std::shared_ptr<T> RetPtr = std::static_pointer_cast<T>(SrcPtr);
 	return RetPtr;

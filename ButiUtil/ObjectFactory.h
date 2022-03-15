@@ -21,7 +21,7 @@ public:
 	template<typename T, typename... Ts>
 	static inline std::shared_ptr<T> CreateFromCereal(const std::string& arg_filePath) {
 		std::shared_ptr<T> Ptr = std::shared_ptr<T>();
-		if (Util::CheckFileExistence(arg_filePath))
+		if (Util::ExistFile(arg_filePath))
 			InputCereal(Ptr, arg_filePath);
 		else {
 			Ptr = std::make_shared<T>();

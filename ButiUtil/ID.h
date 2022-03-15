@@ -79,7 +79,7 @@ public:
 		return map_shp_resource.at(arg_key);
 	}
 
-	bool IsExistence(const ID<T>& arg_tag)const {
+	bool Exist(const ID<T>& arg_tag)const {
 		if (arg_tag.IsEmpty()) {
 			return false;
 		}

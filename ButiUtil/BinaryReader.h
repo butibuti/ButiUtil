@@ -1,10 +1,8 @@
-#pragma once
+#ifndef BINARYREADER
+#define BINARYREADER
 
-#ifdef BUTIUTILDLL_EXPORTS
-#define BUTIUTIL_API __declspec(dllexport)
-#else
-#define BUTIUTIL_API __declspec(dllimport)
-#endif
+#pragma once
+#include<vector>
 #include<string>
 #include <stack>
 #include<fstream>
@@ -27,35 +25,35 @@ namespace ButiEngine {
 			return output;
 		}
 
-		BUTIUTIL_API static int SwapByte(const int arg_int);
-		BUTIUTIL_API static unsigned int SwapByte(const unsigned int arg_UINT);
-		BUTIUTIL_API static float SwapByte(const float arg_float);
-		BUTIUTIL_API static double SwapByte(const double& arg_double);
+		static int SwapByte(const int arg_int);
+		static unsigned int SwapByte(const unsigned int arg_UINT);
+		static float SwapByte(const float arg_float);
+		static double SwapByte(const double& arg_double);
 	private:
 
-		BUTIUTIL_API static short Swap16bit(const short input);
-		BUTIUTIL_API static int Swap32bit(const int input);
-		BUTIUTIL_API static longLong Swap64bit(const longLong& input);
+		static short Swap16bit(const short input);
+		static int Swap32bit(const int input);
+		static longLong Swap64bit(const longLong& input);
 
-		BUTIUTIL_API static ushort Swap16bit(const ushort& input);
-		BUTIUTIL_API static unsigned int Swap32bit(const unsigned int input);
-		BUTIUTIL_API static ulongLong Swap64bit(const ulongLong& input);
-		BUTIUTIL_API BinaryHelper();
+		static ushort Swap16bit(const ushort& input);
+		static unsigned int Swap32bit(const unsigned int input);
+		static ulongLong Swap64bit(const ulongLong& input);
+		BinaryHelper();
 	};
 
 	extern class BinaryReader
 	{
 	public:
-		BUTIUTIL_API bool ReadStart(const std::string& filePath);
-		BUTIUTIL_API void ReadEnd();
-		BUTIUTIL_API std::string ReadString();
-		BUTIUTIL_API std::string ReadString_All();
-		BUTIUTIL_API std::string ReadCharactor(const unsigned int count);
-		BUTIUTIL_API char* ReadCharactor();
-		BUTIUTIL_API void* ReadData(const  int size);
-		BUTIUTIL_API void ReadData(char* out,const int size);
+		bool ReadStart(const std::string& filePath);
+		void ReadEnd();
+		std::string ReadString();
+		std::string ReadString_All();
+		std::string ReadCharactor(const unsigned int count);
+		char* ReadCharactor();
+		void* ReadData(const  int size);
+		void ReadData(char* out,const int size);
 
-		BUTIUTIL_API void ReadDefrateData(const unsigned int arg_compressedSize, unsigned int uncompressedSize, const unsigned int arraySize, unsigned char* outBuffer);
+		void ReadDefrateData(const unsigned int arg_compressedSize, unsigned int uncompressedSize, const unsigned int arraySize, unsigned char* outBuffer);
 		template<typename T>
 		inline void ReadDefratedArrayData(const unsigned int arg_compressedSize,const unsigned int arraySize, std::vector< T>& out) {
 			unsigned char* outBuffer;
@@ -77,8 +75,8 @@ namespace ButiEngine {
 			}
 			free( outBuffer);
 		}
-		BUTIUTIL_API std::wstring ReadWCharactor(const unsigned int count);
-		BUTIUTIL_API std::wstring ReadShift_jis(const unsigned int count);
+		std::wstring ReadWCharactor(const unsigned int count);
+		std::wstring ReadShift_jis(const unsigned int count);
 		
 		inline bool IsEOF() {
 			return fin.eof();
@@ -170,19 +168,19 @@ namespace ButiEngine {
 		inline std::streampos GetCurrentPos() {
 			return fin.tellg();
 		}
-		BUTIUTIL_API int GetReamainSize();
-		BUTIUTIL_API BinaryReader() {};
+		int GetReamainSize();
+		BinaryReader() {};
 	private:
 		std::ifstream fin;
 	};
 	extern class BinaryWriter {
 	public:
-		BUTIUTIL_API bool WriteStart(const std::string& filePath);
-		BUTIUTIL_API void WriteEnd();
-		BUTIUTIL_API void WriteString(const std::string& write);
-		BUTIUTIL_API void WriteCharactor(const std::string& write);
-		BUTIUTIL_API void WriteCharactor(const char* write,const unsigned int size);
-		BUTIUTIL_API void WriteWCharactor(const  std::wstring & write);
+		bool WriteStart(const std::string& filePath);
+		void WriteEnd();
+		void WriteString(const std::string& write);
+		void WriteCharactor(const std::string& write);
+		void WriteCharactor(const char* write,const unsigned int size);
+		void WriteWCharactor(const  std::wstring & write);
 
 		template<typename T>
 		inline void WriteVariable( T  writeVar) {
@@ -242,3 +240,5 @@ namespace ButiEngine {
 		std::ofstream fout;
 	};
 }
+
+#endif // !BINARYREADER
