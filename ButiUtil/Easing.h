@@ -199,13 +199,12 @@ static  float (*EaseFunctions[])(const float) = { EaseIn, EaseOut, EaseInOut,
          EaseInQuint, EaseOutQuint, EaseInOutQuint,
          EaseInExpo, EaseOutExpo, EaseInOutExpo,
          Parabola, Liner,none,CubeRotate90 ,CubeRotate180,CubeRotateMin90 ,CubeRotateMin180 };
-static float GetEase(float x, EasingType type) {
-    return (EaseFunctions)[(int)type](x);
+static float GetEase(const float x, const EasingType type) {
+    return (EaseFunctions)[(std::int32_t)type](x);
 }
-static float GetEase(float x, int type) {
+static float GetEase(const float x, std::int32_t type) {
     return (EaseFunctions)[type](x);
 }
-
 }
 
 

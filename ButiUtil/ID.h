@@ -5,31 +5,24 @@
 #include<string>
 namespace ButiEngine {
 static const std::string noneIDStr = "none";
-template <class T>
+template <typename T>
 class ID {
 public:
 	ID() {}
-	ID(std::shared_ptr<std::string> arg_id) { id = (arg_id); }
-	ID(std::string arg_str) { id = std::make_shared<std::string>(arg_str); }
+	ID(Value_ptr<std::string> arg_id) { id =* (arg_id); }
+	ID(std::string arg_str) { id = arg_str; }
 
 	const std::string& GetID()const {
-		if (id)
-			return *id;
-		else {
-			return noneIDStr;
-		}
+		return IsEmpty()? noneIDStr: id;
 	}
 	bool operator == (const ID& other) const {
-		if (other.IsEmpty() || IsEmpty()) {
-			return false;
-		}
-		return *other.id == *id;
+		return IsEmpty() ? false: id==other.id;
 	}
 	bool operator != (const ID& other)const {
-		return *other.id != *id;
+		return other.id != id;
 	}
 	bool IsEmpty() const {
-		return id == nullptr;
+		return !id.size();
 	}
 	template<class Archive>
 	void serialize(Archive& archive)
@@ -37,19 +30,19 @@ public:
 		archive(id);
 	}
 private:
-	std::shared_ptr<std::string> id = nullptr;
+	std::string id ;
 };
 
-template <class T>
+template <typename T>
 class IDContainer {
 public:
 	void Clear() {
 		map_shp_resource.clear();
 	}
 	ID<T> GetTag(const std::string& arg_key)const {
-		return ID<T>(std::make_shared<std::string>(arg_key));
+		return ID<T>(make_value<std::string>(arg_key));
 	}
-	std::shared_ptr<T> GetValue(const ID<T>& arg_tag) {
+	Value_ptr<T> GetValue(const ID<T>& arg_tag) {
 		if (arg_tag.IsEmpty()) {
 			std::cout << arg_tag.GetID() << ": This tag is unregisted." << std::endl;
 			return FailedValue();
@@ -63,7 +56,7 @@ public:
 			return FailedValue();
 		}
 	}
-	std::shared_ptr<T> FailedValue() {
+	Value_ptr<T> FailedValue() {
 
 		if (map_shp_resource.size()) {
 			return map_shp_resource.begin()->second;
@@ -74,7 +67,7 @@ public:
 		}
 
 	}
-	std::shared_ptr<T> GetValue(const std::string& arg_key) {
+	Value_ptr<T> GetValue(const std::string& arg_key) {
 
 		return map_shp_resource.at(arg_key);
 	}
@@ -85,8 +78,8 @@ public:
 		}
 		return map_shp_resource.count(arg_tag.GetID());
 	}
-	ID<T> AddValue(std::shared_ptr<T> arg_value, const std::string& arg_key) {
-		ID<T> output(std::make_shared<std::string>(arg_key));
+	ID<T> AddValue(Value_ptr<T> arg_value, const std::string& arg_key) {
+		ID<T> output(make_value<std::string>(arg_key));
 		if (map_shp_resource.count(arg_key)) {
 			return output;
 		}
@@ -117,9 +110,7 @@ public:
 
 	ID<T> ShowGUI(GUI::GuiIO& arg_io, const std::string& arg_exclusionWord = "") {
 
-		if (GUI::InputTextWithHint("searchStr", "search", searchStrAry, 256)) {
-			searchStr = searchStrAry;
-		}
+		GUI::Input("searchStr##"+std::string( typeid(T).name()), searchStr);
 
 
 		ID<T> out;
@@ -160,8 +151,8 @@ public:
 		return out;
 	}
 
-	std::vector< std::shared_ptr<T>> GetResources() const {
-		std::vector< std::shared_ptr<T>> output;
+	std::vector< Value_ptr<T>> GetResources() const {
+		std::vector< Value_ptr<T>> output;
 		output.reserve(map_shp_resource.size());
 		for (auto itr = map_shp_resource.begin(), end = map_shp_resource.end(); itr != end; itr++) {
 			output.push_back(itr->second);
@@ -189,12 +180,11 @@ public:
 		return output;
 	}
 private:
-	std::map< std::string, std::shared_ptr<T>> map_shp_resource;
+	std::map< std::string, Value_ptr<T>> map_shp_resource;
 	std::string searchStr;
-	char searchStrAry[256];
 
 };
-template <class T>
+template <typename T>
 class IDManager {
 public:
 	~IDManager() {

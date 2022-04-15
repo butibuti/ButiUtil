@@ -31,14 +31,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryReader.h" />
-    <ClInclude Include="ButiPtr.h" />
     <ClInclude Include="ButiPtrCereal.h" />
     <ClInclude Include="CSVData.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="Exception.h" />
     <ClInclude Include="Helper\StringHelper.h" />
     <ClInclude Include="ID.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TypeDetail.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

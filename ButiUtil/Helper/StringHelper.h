@@ -13,7 +13,7 @@ public:
 	static std::string Cut(const std::string& source, const std::string& frontCuttingSouece, const std::string& backCuttingSouece, bool isContaisCutSource = true);
 	static std::string BackIdentifer(const std::string& source,   const std::string& findSouece);
 	static std::string Remove(const std::string& source, const std::string& removeSouece);
-	static std::string Remove(const std::string& source, const unsigned int removeIndex,const unsigned int removeRange);
+	static std::string Remove(const std::string& source, const std::uint32_t removeIndex,const std::uint32_t removeRange);
 	static std::string RemoveComment(const std::string& source);
 	static bool Contains(const std::string& source, const std::string& findSource);
 	static bool Contains(const std::wstring& source, const std::wstring& findSource);

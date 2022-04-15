@@ -1,45 +1,12 @@
 #pragma once
 #include<memory>
 namespace ButiEngine {
-class ObjectFactory {
-public:
-	template<typename T, typename... Ts>
-	static inline std::shared_ptr<T> Create(Ts&&... params) {
-		std::shared_ptr<T> Ptr = std::shared_ptr<T>(new T(params...));
-		//仮想関数呼び出し
-		Ptr->PreInitialize();
-		Ptr->Initialize();
-		Ptr->SetIsCereal(false);
-		return Ptr;
-	};
-	template<typename T, typename... Ts>
-	static inline std::shared_ptr<T> CreateCopy(T value) {
-		std::shared_ptr<T> Ptr = std::make_shared<T>(value);
-		return Ptr;
-	};
-
-	template<typename T, typename... Ts>
-	static inline std::shared_ptr<T> CreateFromCereal(const std::string& arg_filePath) {
-		std::shared_ptr<T> Ptr = std::shared_ptr<T>();
-		if (Util::ExistFile(arg_filePath))
-			InputCereal(Ptr, arg_filePath);
-		else {
-			Ptr = std::make_shared<T>();
-		}
-		//仮想関数呼び出し
-		Ptr->PreInitialize();
-		Ptr->Initialize();
-		Ptr->SetIsCereal(true);
-		return Ptr;
-	};
-
-};
 
 struct GUIWindowReaction {
 	bool isHovered = false;
 	bool isClosed = false;
 };
-class IObject :public std::enable_shared_from_this<IObject>
+class IObject : public enable_value_from_this<IObject>
 {
 	friend class ObjectFactory;
 	bool isCereal = true;
@@ -52,8 +19,8 @@ protected:
 	};
 public:
 	template<typename T>
-	inline std::shared_ptr<T> GetThis() {
-		auto Ptr = std::dynamic_pointer_cast<T>(shared_from_this());
+	inline Value_ptr<T> GetThis() {
+		auto Ptr = dynamic_value_ptr_cast<T>(value_from_this());
 		if (Ptr) {
 			return Ptr;
 		}
@@ -63,7 +30,7 @@ public:
 			str += L" type.";
 			throw ButiException(
 				str,
-				L"if( ! dynamic_pointer_cast<T>(shared_from_this()) )",
+				L"if( ! dynamic_value_ptr_cast<T>(value_from_this()) )",
 				L"IObject::GetThis()"
 			);
 		}
@@ -91,7 +58,7 @@ public:
 	}
 	template<typename T>
 	inline bool IsThis() {
-		auto Ptr = std::dynamic_pointer_cast<T>(shared_from_this());
+		auto Ptr = dynamic_value_ptr_cast<T>(value_from_this());
 		if (Ptr) {
 			return true;
 		}
@@ -125,6 +92,42 @@ public:
 	void UnRegistEditorGUI() { GUI::UnRegistEditorGUIObject(GetThis<IObject>()); }
 #endif // BUTIGUI_H
 };
+class ObjectFactory {
+public:
+	template<typename T, typename... Ts>
+	static inline Value_ptr<T> Create(Ts&&... params) {
+		Value_ptr<T> output = make_value<T>(params...);
+		if constexpr (std::is_base_of_v<IObject,T>) {
+			output->PreInitialize();
+			output->Initialize();
+			output->SetIsCereal(false);
+		}
+		return output;
+	};
+	template<typename T>
+	static inline Value_ptr<T> CreateCopy(const T& arg_value) {
+		return make_value<T>(arg_value);
+	};
+
+
+	template<typename T, typename... Ts>
+	static inline Value_ptr<T> CreateFromCereal(const std::string& arg_filePath) {
+		Value_ptr<T> output= Value_ptr<T>();
+		if (Util::ExistFile(arg_filePath))
+			InputCereal(output, arg_filePath);
+		else {
+			output= make_value<T>();
+		}
+		if constexpr (std::is_base_of_v<IObject,T>) {
+			output->PreInitialize();
+			output->Initialize();
+			output->SetIsCereal(false);
+		}
+		return output;
+	};
+
+};
+
 template <typename T>
 class ObjectRegistContainer {
 public:
@@ -136,21 +139,21 @@ public:
 		}
 	}
 
-	void Regist(std::shared_ptr<T> arg_shp_registObj) {
+	void Regist(Value_ptr<T> arg_shp_registObj) {
 		if (map_objectIndexPtr.count(arg_shp_registObj)) {
 			return;
 		}
-		vec_objectIndex.push_back(new int(vec_objectIndex.size()));
+		vec_objectIndex.push_back(new std::int32_t(vec_objectIndex.size()));
 		map_objectIndexPtr.emplace(arg_shp_registObj, vec_objectIndex.back());
 		vec_shp_Objects.push_back(arg_shp_registObj);
 	}
-	void UnRegist(std::shared_ptr<T> arg_shp_unregistObj) {
+	void UnRegist(Value_ptr<T> arg_shp_unregistObj) {
 		if (!map_objectIndexPtr.count(arg_shp_unregistObj)) {
 			return;
 		}
 
 		auto itr = vec_shp_Objects.begin();
-		int index = *map_objectIndexPtr.at(arg_shp_unregistObj);
+		std::int32_t index = *map_objectIndexPtr.at(arg_shp_unregistObj);
 		itr += index;
 		vec_shp_Objects.erase(itr);
 		map_objectIndexPtr.erase(arg_shp_unregistObj);
@@ -173,9 +176,9 @@ public:
 	}
 
 private:
-	std::vector< std::shared_ptr<T>>vec_shp_Objects;
-	std::map<std::shared_ptr<T>, int*> map_objectIndexPtr;
-	std::vector<int*> vec_objectIndex;
+	std::vector< Value_ptr<T>>vec_shp_Objects;
+	std::map<Value_ptr<T>, std::int32_t*> map_objectIndexPtr;
+	std::vector<std::int32_t*> vec_objectIndex;
 };
 
 }

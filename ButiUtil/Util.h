@@ -8,6 +8,7 @@
 #include<Windows.h>
 
 #include<fstream>
+#include"Exception.h"
 namespace ButiEngine {
 namespace BitFlag {
 constexpr std::uint32_t FLAG_MAX = 16;
@@ -19,7 +20,9 @@ namespace Util
 template<typename T>
 class MemoryReleaser {
 public:
-	MemoryReleaser(T** arg_p_memoryAddress) :p_memoryAddress(arg_p_memoryAddress) {}
+	MemoryReleaser(T** arg_p_memoryAddress) :p_memoryAddress(arg_p_memoryAddress) {
+		std::int32_t i = 0;
+	}
 	~MemoryReleaser()
 	{
 		if (*p_memoryAddress) {
@@ -180,22 +183,6 @@ public:
 		return out;
 	}
 };
-
-class ButiException :public std::exception {
-
-	std::wstring wstr_errorMessage;
-public:
-	ButiException(const std::wstring& message1, const std::wstring& message2, const std::wstring& message3) {
-		wstr_errorMessage = message1;
-		wstr_errorMessage += L"\n" + message2 + L"\n" + message3;
-	}
-	ButiException(const std::wstring& message) {
-		wstr_errorMessage = message;
-	}
-	const std::wstring& what_w() const throw() {
-		return wstr_errorMessage;
-	}
-};
 namespace ButiTime {
 static inline timespec* timespecSubstruction(const struct timespec* A, const struct timespec* B, struct timespec* C)
 {
@@ -215,10 +202,6 @@ static void ThrowButiException_Runtime(const std::wstring& message1, const std::
 static void ThrowButiException_Runtime(const std::string& meesage1, const std::string& message2, const std::string& message3);
 
 
-template<typename T>
-static std::shared_ptr<void> SharedPtrToVoid(const std::shared_ptr<T>& SrcPtr);
-template<typename T>
-static std::shared_ptr<T> VoidToShared(const std::shared_ptr<void>& SrcPtr);
 
 extern class ButiRandom {
 public:
@@ -236,18 +219,6 @@ private:
 	ButiRandom() {};
 	~ButiRandom() {};
 };
-template<typename T>
-inline std::shared_ptr<void> SharedPtrToVoid(const std::shared_ptr<T>& SrcPtr)
-{
-	std::shared_ptr<void> RetPtr = std::static_pointer_cast<void>(SrcPtr);
-	return RetPtr;
-}
-template<typename T>
-inline std::shared_ptr<T> VoidToShared(const std::shared_ptr<void>& SrcPtr)
-{
-	std::shared_ptr<T> RetPtr = std::static_pointer_cast<T>(SrcPtr);
-	return RetPtr;
-}
 
 enum class SamplerState {
 	LinearClamp,

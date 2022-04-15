@@ -7,9 +7,6 @@
 #include <stack>
 #include<fstream>
 namespace ButiEngine {
-	using  longLong=long long;
-	using ulongLong= unsigned long long ;
-	using ushort= unsigned short ;
 
 	extern class BinaryHelper {
 	public:
@@ -19,25 +16,25 @@ namespace ButiEngine {
 			char *conv = (char*)& input;
 			char *ret = (char*)& output;
 			auto size = sizeof(T);
-			for (int i = 0; i < size; i++) {
+			for (std::int32_t i = 0; i < size; i++) {
 				ret[i] = conv[size - 1 - i];
 			}
 			return output;
 		}
 
-		static int SwapByte(const int arg_int);
-		static unsigned int SwapByte(const unsigned int arg_UINT);
+		static std::int32_t SwapByte(const std::int32_t arg_int);
+		static std::uint32_t SwapByte(const std::uint32_t arg_UINT);
 		static float SwapByte(const float arg_float);
 		static double SwapByte(const double& arg_double);
 	private:
 
-		static short Swap16bit(const short input);
-		static int Swap32bit(const int input);
-		static longLong Swap64bit(const longLong& input);
+		static std::int16_t Swap16bit(const std::int16_t input);
+		static std::int32_t Swap32bit(const std::int32_t input);
+		static std::int64_t Swap64bit(const std::int64_t& input);
 
-		static ushort Swap16bit(const ushort& input);
-		static unsigned int Swap32bit(const unsigned int input);
-		static ulongLong Swap64bit(const ulongLong& input);
+		static std::uint16_t Swap16bit(const std::uint16_t& input);
+		static std::uint32_t Swap32bit(const std::uint32_t input);
+		static std::uint64_t Swap64bit(const std::uint64_t& input);
 		BinaryHelper();
 	};
 
@@ -48,17 +45,17 @@ namespace ButiEngine {
 		void ReadEnd();
 		std::string ReadString();
 		std::string ReadString_All();
-		std::string ReadCharactor(const unsigned int count);
+		std::string ReadCharactor(const std::uint32_t count);
 		char* ReadCharactor();
-		void* ReadData(const  int size);
-		void ReadData(char* out,const int size);
+		void* ReadData(const  std::int32_t size);
+		void ReadData(char* out,const std::int32_t size);
 
-		void ReadDefrateData(const unsigned int arg_compressedSize, unsigned int uncompressedSize, const unsigned int arraySize, unsigned char* outBuffer);
+		void ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer);
 		template<typename T>
-		inline void ReadDefratedArrayData(const unsigned int arg_compressedSize,const unsigned int arraySize, std::vector< T>& out) {
+		inline void ReadDefratedArrayData(const std::uint32_t arg_compressedSize,const std::uint32_t arraySize, std::vector< T>& out) {
 			unsigned char* outBuffer;
 
-			unsigned int uncompressedSize = arraySize * sizeof(T);
+			std::uint32_t uncompressedSize = arraySize * sizeof(T);
 
 			outBuffer = (unsigned char*)malloc(uncompressedSize);
 			
@@ -67,7 +64,7 @@ namespace ButiEngine {
 
 			out.resize(arraySize);
 
-			for (int i = 0; i < arraySize; i++) {
+			for (std::int32_t i = 0; i < arraySize; i++) {
 				T var;
 				var=* reinterpret_cast<T*>(&outBuffer[i * sizeof(T)]);
 
@@ -75,23 +72,23 @@ namespace ButiEngine {
 			}
 			free( outBuffer);
 		}
-		std::wstring ReadWCharactor(const unsigned int count);
-		std::wstring ReadShift_jis(const unsigned int count);
+		std::wstring ReadWCharactor(const std::uint32_t count);
+		std::wstring ReadShift_jis(const std::uint32_t count);
 		
 		inline bool IsEOF() {
 			return fin.eof();
 		}
 
-		inline void Skip(const int skipByte) {
+		inline void Skip(const std::int32_t skipByte) {
 			auto currentPos = fin.tellg();
-			fin.seekg((((int)currentPos) + skipByte), std::ios_base::beg);
+			fin.seekg((((std::int32_t)currentPos) + skipByte), std::ios_base::beg);
 		}
 
 		inline bool Skip(const  std::string& skipSource) {
 
 			auto currentPos = fin.tellg();
 			std::string find = "";
-			int i = 0;
+			std::int32_t i = 0;
 			while (find!=skipSource&&!fin.eof() )
 			{
 				char read= ReadVariable<char>();
@@ -104,12 +101,12 @@ namespace ButiEngine {
 				}
 			}
 			if (find == skipSource) {
-				int size =(int) skipSource.size();
+				std::int32_t size =(std::int32_t) skipSource.size();
 				Skip(-(size));
 				return true;
 			}
 			else {
-				fin.seekg(((int)currentPos ), std::ios_base::beg);
+				fin.seekg(((std::int32_t)currentPos ), std::ios_base::beg);
 				return false;
 			}
 
@@ -123,19 +120,19 @@ namespace ButiEngine {
 			BinaryHelper::SwapBytes(out);
 			return out;
 		}
-		inline int ReadInt(const int readRange) {
-			int out;
+		inline std::int32_t ReadInt(const std::int32_t readRange) {
+			std::int32_t out;
 			if (readRange == 1)
 			{
 				char byte1;
 				fin.read((char*)&byte1, readRange);
-				out = (int)byte1;
+				out = (std::int32_t)byte1;
 			}
 			else if (readRange == 2)
 			{
-				short byte2;
+				std::int16_t byte2;
 				fin.read((char*)&byte2, readRange);
-				out = (int)byte2;
+				out = (std::int32_t)byte2;
 			}
 			else
 			{
@@ -144,19 +141,19 @@ namespace ButiEngine {
 			BinaryHelper:: SwapBytes(out);
 			return out;
 		}
-		inline unsigned int ReadUINT(const int readRange) {
-			unsigned int out;
+		inline std::uint32_t ReadUINT(const std::int32_t readRange) {
+			std::uint32_t out;
 			if (readRange == 1)
 			{
 				unsigned char byte1;
 				fin.read((char*)&byte1, readRange);
-				out = (unsigned int)byte1;
+				out = (std::uint32_t)byte1;
 			}
 			else if (readRange == 2)
 			{
-				unsigned short byte2;
+				std::uint16_t byte2;
 				fin.read((char*)&byte2, readRange);
-				out = (unsigned int)byte2;
+				out = (std::uint32_t)byte2;
 			}
 			else
 			{
@@ -168,7 +165,7 @@ namespace ButiEngine {
 		inline std::streampos GetCurrentPos() {
 			return fin.tellg();
 		}
-		int GetReamainSize();
+		std::int32_t GetReamainSize();
 		BinaryReader() {};
 	private:
 		std::ifstream fin;
@@ -179,7 +176,7 @@ namespace ButiEngine {
 		void WriteEnd();
 		void WriteString(const std::string& write);
 		void WriteCharactor(const std::string& write);
-		void WriteCharactor(const char* write,const unsigned int size);
+		void WriteCharactor(const char* write,const std::uint32_t size);
 		void WriteWCharactor(const  std::wstring & write);
 
 		template<typename T>
@@ -191,8 +188,8 @@ namespace ButiEngine {
 
 
 		}
-		inline void WriteInt(const int write, const unsigned int readRange) {
-			int out = write;
+		inline void WriteInt(const std::int32_t write, const std::uint32_t readRange) {
+			std::int32_t out = write;
 
 			BinaryHelper::SwapBytes(out);
 			if (readRange == 1)
@@ -202,7 +199,7 @@ namespace ButiEngine {
 			}
 			else if (readRange == 2)
 			{
-				short byte2 = write;
+				std::int16_t byte2 = write;
 				fout.write((char*)&byte2, readRange);
 			}
 			else
@@ -210,18 +207,18 @@ namespace ButiEngine {
 				fout.write((char*)&out, 4);
 			}
 		}
-		inline void WriteUINT(const unsigned int write, const unsigned int readRange) {
-			unsigned int out = write;
+		inline void WriteUINT(const std::uint32_t write, const std::uint32_t readRange) {
+			std::uint32_t out = write;
 
 			BinaryHelper::SwapBytes(out);
 			if (readRange == 1)
 			{
-				unsigned char byte1 = write;
+				std::uint8_t byte1 = write;
 				fout.write((char*)&byte1, readRange);
 			}
 			else if (readRange == 2)
 			{
-				unsigned short byte2 = write;
+				std::uint16_t byte2 = write;
 				fout.write((char*)&byte2, readRange);
 			}
 			else

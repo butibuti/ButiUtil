@@ -2,7 +2,7 @@
 
 #include "Util.h"
 #include<random>
-
+#include"../../ButiMemorySystem/ButiMemorySystem/ButiPtr.h"
 
 
 void ButiEngine::Util::WStringtoMultiByte(const std::wstring & src, std::string & dest)
@@ -25,7 +25,7 @@ std::string ButiEngine::Util::WStringToString(std::wstring oWString)
 
 {
 	// wstring → SJIS
-	int iBufferSize = WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str()
+	std::int32_t iBufferSize = WideCharToMultiByte(CP_OEMCP, 0, oWString.c_str()
 		, -1, (char *)NULL, 0, NULL, NULL);
 
 	// バッファの取得
@@ -47,7 +47,7 @@ std::string ButiEngine::Util::WStringToString(std::wstring oWString)
 
 std::wstring ButiEngine::Util::StringToWString(std::string oString) {
 	// SJIS → wstring
-	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, oString.c_str()
+	std::int32_t iBufferSize = MultiByteToWideChar(CP_ACP, 0, oString.c_str()
 		, -1, (wchar_t*)NULL, 0);
 
 	// バッファの取得
@@ -92,15 +92,15 @@ void ButiEngine::ThrowButiException_Runtime(const std::string & meesage1, const 
 	throw std::runtime_error(outputMessage);
 }
 
-std::shared_ptr< std::random_device> shp_rnd_device = nullptr;
-std::shared_ptr<std::mt19937>shp_mt = nullptr;
-std::shared_ptr< std::uniform_int_distribution<>> shp_randRange = nullptr;
+ButiEngine::Value_ptr< std::random_device> shp_rnd_device = nullptr;
+ButiEngine::Value_ptr<std::mt19937>shp_mt = nullptr;
+ButiEngine::Value_ptr< std::uniform_int_distribution<>> shp_randRange = nullptr;
 
 void ButiEngine::ButiRandom::Initialize()
 {
-	shp_rnd_device = std::make_shared<std::random_device>();
-	shp_mt = std::make_shared<std::mt19937>((*shp_rnd_device)());
-	shp_randRange = std::make_shared< std::uniform_int_distribution<>>(0, 1);
+	shp_rnd_device = make_value<std::random_device>();
+	shp_mt = make_value<std::mt19937>((*shp_rnd_device)());
+	shp_randRange = make_value< std::uniform_int_distribution<>>(0, 1);
 
 }
 
@@ -118,6 +118,6 @@ std::int32_t ButiEngine::ButiRandom::GetInt(const std::int32_t arg_min, const st
 		max = min;
 	}
 
-	shp_randRange = std::make_shared< std::uniform_int_distribution<>>(min, max );
+	shp_randRange = make_value< std::uniform_int_distribution<>>(min, max );
 	return (*shp_randRange)(*shp_mt) ;
 }

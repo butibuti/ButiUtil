@@ -22,7 +22,7 @@ void ButiEngine::BinaryReader::ReadEnd()
 
 std::string ButiEngine::BinaryReader::ReadString()
 {
-	int size =ReadVariable<int>();
+	std::int32_t size =ReadVariable<std::int32_t>();
 	return ReadCharactor(size);
 }
 
@@ -31,7 +31,7 @@ std::string ButiEngine::BinaryReader::ReadString_All()
 	return  std::string(std::istreambuf_iterator<char>(fin),std::istreambuf_iterator<char>());
 }
 
-std::string ButiEngine::BinaryReader::ReadCharactor(const unsigned int count)
+std::string ButiEngine::BinaryReader::ReadCharactor(const std::uint32_t count)
 {
 	char* readChars=(char*)malloc(count);
 
@@ -39,7 +39,7 @@ std::string ButiEngine::BinaryReader::ReadCharactor(const unsigned int count)
 
 	std::string out;
 
-	for (unsigned int i = 0; i <count; i++) {
+	for (std::uint32_t i = 0; i <count; i++) {
 		if (readChars[i] > 9) {
 			out += readChars[i];
 			continue;
@@ -60,9 +60,9 @@ char* ButiEngine::BinaryReader::ReadCharactor()
 	return out;
 }
 
-void* ButiEngine::BinaryReader::ReadData(const int size)
+void* ButiEngine::BinaryReader::ReadData(const std::int32_t size)
 {
-	int readSize = size < 0? GetReamainSize():  size;
+	std::int32_t readSize = size < 0? GetReamainSize():  size;
 
 
 	void* out = malloc(readSize);
@@ -72,16 +72,16 @@ void* ButiEngine::BinaryReader::ReadData(const int size)
 	return out;
 }
 
-void ButiEngine::BinaryReader::ReadData(char* out, const int size)
+void ButiEngine::BinaryReader::ReadData(char* out, const std::int32_t size)
 {
 
-	int readSize = size < 0 ? GetReamainSize() : size;
+	std::int32_t readSize = size < 0 ? GetReamainSize() : size;
 	out =(char*) malloc(readSize);
 
 	fin.read((char*)out, readSize);
 }
 
-void ButiEngine::BinaryReader::ReadDefrateData(const unsigned int arg_compressedSize, unsigned int uncompressedSize, const unsigned int arraySize, unsigned char* outBuffer)
+void ButiEngine::BinaryReader::ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)
 {
 	unsigned char* inBuffer;
 	inBuffer = (unsigned char*)malloc(arg_compressedSize);
@@ -93,7 +93,7 @@ void ButiEngine::BinaryReader::ReadDefrateData(const unsigned int arg_compressed
 	z.zfree = Z_NULL;
 	z.opaque = Z_NULL;
 
-	int res = inflateInit(&z);
+	std::int32_t res = inflateInit(&z);
 	z.next_in = NULL;
 	z.avail_in = 0;
 	z.next_out = outBuffer;
@@ -113,7 +113,7 @@ void ButiEngine::BinaryReader::ReadDefrateData(const unsigned int arg_compressed
 }
 
 
-std::wstring ButiEngine::BinaryReader::ReadWCharactor(const unsigned int count)
+std::wstring ButiEngine::BinaryReader::ReadWCharactor(const std::uint32_t count)
 {
 	wchar_t* readChars = (wchar_t*)malloc(count* sizeof(wchar_t));
 
@@ -121,7 +121,7 @@ std::wstring ButiEngine::BinaryReader::ReadWCharactor(const unsigned int count)
 
 	std::wstring out;
 
-	for (unsigned int i = 0; i < count; i++) {
+	for (std::uint32_t i = 0; i < count; i++) {
 		if (!readChars[i]) {
 			break;
 		}
@@ -131,7 +131,7 @@ std::wstring ButiEngine::BinaryReader::ReadWCharactor(const unsigned int count)
 	return out;
 }
 
-std::wstring ButiEngine::BinaryReader::ReadShift_jis(const unsigned int count)
+std::wstring ButiEngine::BinaryReader::ReadShift_jis(const std::uint32_t count)
 {
 	char* readChars = (char*)malloc(count * sizeof(char));
 
@@ -144,21 +144,21 @@ std::wstring ButiEngine::BinaryReader::ReadShift_jis(const unsigned int count)
 	return Util::StringToWString(out);
 }
 
-int ButiEngine::BinaryReader::GetReamainSize()
+std::int32_t ButiEngine::BinaryReader::GetReamainSize()
 {
 	auto current = fin.tellg();
 	fin.seekg(0,std::ios::end);
 	auto output = fin.tellg() - current;
 	fin.seekg(current);
-	return (int)output;
+	return (std::int32_t)output;
 }
 
-int ButiEngine::BinaryHelper::SwapByte(const int arg_int)
+std::int32_t ButiEngine::BinaryHelper::SwapByte(const std::int32_t arg_int)
 {
 	return Swap32bit(arg_int);
 }
 
-unsigned int ButiEngine::BinaryHelper::SwapByte(const unsigned int arg_UINT)
+std::uint32_t ButiEngine::BinaryHelper::SwapByte(const std::uint32_t arg_UINT)
 {
 	return Swap32bit(arg_UINT);
 }
@@ -166,7 +166,7 @@ unsigned int ButiEngine::BinaryHelper::SwapByte(const unsigned int arg_UINT)
 float ButiEngine::BinaryHelper::SwapByte(const float arg_float)
 {
 	float output;
-	unsigned int reverseValue;
+	std::uint32_t reverseValue;
 	memcpy(&reverseValue, &arg_float, sizeof(arg_float));
 	reverseValue = Swap32bit(reverseValue);
 	memcpy(&output, &reverseValue, sizeof(reverseValue));
@@ -176,16 +176,16 @@ float ButiEngine::BinaryHelper::SwapByte(const float arg_float)
 double ButiEngine::BinaryHelper::SwapByte(const double & arg_double)
 {
 	float output;
-	ulongLong reverseValue;
+	std::uint64_t reverseValue;
 	memcpy(&reverseValue, &arg_double, sizeof(arg_double));
 	reverseValue = Swap64bit(reverseValue);
 	memcpy(&output, &reverseValue, sizeof(reverseValue));
 	return output;
 }
 
-short ButiEngine::BinaryHelper::Swap16bit(const short input)
+std::int16_t ButiEngine::BinaryHelper::Swap16bit(const std::int16_t input)
 {
-	short output;
+	std::int16_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -195,9 +195,9 @@ short ButiEngine::BinaryHelper::Swap16bit(const short input)
 	return output;
 }
 
-int ButiEngine::BinaryHelper::Swap32bit(const int input)
+std::int32_t ButiEngine::BinaryHelper::Swap32bit(const std::int32_t input)
 {
-	int output;
+	std::int32_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -209,9 +209,9 @@ int ButiEngine::BinaryHelper::Swap32bit(const int input)
 	return output;
 }
 
-ButiEngine::longLong ButiEngine::BinaryHelper::Swap64bit(const longLong & input)
+std::int64_t ButiEngine::BinaryHelper::Swap64bit(const std::int64_t & input)
 {
-	longLong output;
+	std::int64_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -227,9 +227,9 @@ ButiEngine::longLong ButiEngine::BinaryHelper::Swap64bit(const longLong & input)
 	return output;
 }
 
-ButiEngine::ushort ButiEngine::BinaryHelper::Swap16bit(const ushort & input)
+std::uint16_t ButiEngine::BinaryHelper::Swap16bit(const std::uint16_t & input)
 {
-	ushort output;
+	std::uint16_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -239,9 +239,9 @@ ButiEngine::ushort ButiEngine::BinaryHelper::Swap16bit(const ushort & input)
 	return output;
 }
 
-unsigned int ButiEngine::BinaryHelper::Swap32bit(const unsigned int input)
+std::uint32_t ButiEngine::BinaryHelper::Swap32bit(const std::uint32_t input)
 {
-	int output;
+	std::int32_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -253,9 +253,9 @@ unsigned int ButiEngine::BinaryHelper::Swap32bit(const unsigned int input)
 	return output;
 }
 
-ButiEngine::ulongLong ButiEngine::BinaryHelper::Swap64bit(const ulongLong & input)
+std::uint64_t ButiEngine::BinaryHelper::Swap64bit(const std::uint64_t & input)
 {
-	ulongLong output;
+	std::uint64_t output;
 	char *conv = (char*)& input;
 	char *ret = (char*)& output;
 
@@ -289,7 +289,7 @@ void ButiEngine::BinaryWriter::WriteEnd()
 
 void ButiEngine::BinaryWriter::WriteString(const std::string& write)
 {
-	WriteVariable<int>(write.size());
+	WriteVariable<std::int32_t>(write.size());
 	fout.write(write.c_str(), write.size());
 }
 
@@ -298,7 +298,7 @@ void ButiEngine::BinaryWriter::WriteCharactor(const std::string & write)
 	fout.write(write.c_str(), write.size());
 }
 
-void ButiEngine::BinaryWriter::WriteCharactor(const char* write, const unsigned int size)
+void ButiEngine::BinaryWriter::WriteCharactor(const char* write, const std::uint32_t size)
 {
 	fout.write(write,size);
 }

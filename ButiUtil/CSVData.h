@@ -1,21 +1,20 @@
 #pragma once
 #include<string>
-#include<memory>
-
+#include"../../ButiMemorySystem/ButiMemorySystem/ButiPtr.h"
 namespace ButiEngine {
-struct CSVData :public std::enable_shared_from_this<CSVData>
+struct CSVData :public Value_ptr<CSVData>
 {
 public:
-	CSVData(int arg_size_x, int arg_size_y) {
+	CSVData(std::int32_t arg_size_x, std::int32_t arg_size_y) {
 		size_x = arg_size_x;
 		size_y = arg_size_y;
-		data = new int* [size_x];
-		for (int i = 0; i < size_x; i++) {
-			data[i] = new int[size_y];
+		data = new std::int32_t* [size_x];
+		for (std::int32_t i = 0; i < size_x; i++) {
+			data[i] = new std::int32_t[size_y];
 		}
 	}
 	~CSVData() {
-		for (int i = 0; i < size_x; i++) {
+		for (std::int32_t i = 0; i < size_x; i++) {
 			delete[] data[i];
 		}
 		delete[] data;
@@ -23,28 +22,28 @@ public:
 	CSVData(const CSVData& obj) {
 		size_x = obj.size_x;
 		size_y = obj.size_y;
-		data = new int* [size_x];
-		for (int i = 0; i < size_x; i++) {
-			data[i] = new int[size_y];
+		data = new std::int32_t* [size_x];
+		for (std::int32_t i = 0; i < size_x; i++) {
+			data[i] = new std::int32_t[size_y];
 		}
 
-		for (int i = 0; i < size_x; i++) {
-			for (int j = 0; j < size_y; j++)
+		for (std::int32_t i = 0; i < size_x; i++) {
+			for (std::int32_t j = 0; j < size_y; j++)
 			{
 				data[i][j] = obj.data[i][j];
 			}
 		}
 	}
-	int** data;
-	int size_x;
-	int size_y;
+	std::int32_t** data;
+	std::int32_t size_x;
+	std::int32_t size_y;
 };
 
 class CSVReader
 {
 public:
 	~CSVReader();
-	static std::shared_ptr<CSVData> GetMatrix(const std::string& filePath);
+	static Value_ptr<CSVData> GetMatrix(const std::string& filePath);
 private:
 	CSVReader();
 };
