@@ -1,5 +1,7 @@
 #pragma once
-#include<memory>
+#include"ButiMemorySystem/ButiMemorySystem/ButiPtr.h"
+#include<vector>
+#include<map>
 namespace ButiEngine {
 
 struct GUIWindowReaction {
@@ -139,24 +141,24 @@ public:
 		}
 	}
 
-	void Regist(Value_ptr<T> arg_shp_registObj) {
-		if (map_objectIndexPtr.count(arg_shp_registObj)) {
+	void Regist(Value_ptr<T> arg_vlp_registObj) {
+		if (map_objectIndexPtr.count(arg_vlp_registObj)) {
 			return;
 		}
 		vec_objectIndex.push_back(new std::int32_t(vec_objectIndex.size()));
-		map_objectIndexPtr.emplace(arg_shp_registObj, vec_objectIndex.back());
-		vec_shp_Objects.push_back(arg_shp_registObj);
+		map_objectIndexPtr.emplace(arg_vlp_registObj, vec_objectIndex.back());
+		vec_vlp_Objects.push_back(arg_vlp_registObj);
 	}
-	void UnRegist(Value_ptr<T> arg_shp_unregistObj) {
-		if (!map_objectIndexPtr.count(arg_shp_unregistObj)) {
+	void UnRegist(Value_ptr<T> arg_vlp_unregistObj) {
+		if (!map_objectIndexPtr.count(arg_vlp_unregistObj)) {
 			return;
 		}
 
-		auto itr = vec_shp_Objects.begin();
-		std::int32_t index = *map_objectIndexPtr.at(arg_shp_unregistObj);
+		auto itr = vec_vlp_Objects.begin();
+		std::int32_t index = *map_objectIndexPtr.at(arg_vlp_unregistObj);
 		itr += index;
-		vec_shp_Objects.erase(itr);
-		map_objectIndexPtr.erase(arg_shp_unregistObj);
+		vec_vlp_Objects.erase(itr);
+		map_objectIndexPtr.erase(arg_vlp_unregistObj);
 		delete vec_objectIndex.at(index);
 
 		for (auto indexItr = vec_objectIndex.erase(vec_objectIndex.begin() + index), end = vec_objectIndex.end(); indexItr != end; indexItr++) {
@@ -166,7 +168,7 @@ public:
 	template<void (T::* Method)() >
 	void CallFunction() {
 
-		auto currentVec = vec_shp_Objects;
+		auto currentVec = vec_vlp_Objects;
 		for (auto itr = currentVec.begin(); itr != currentVec.end(); itr++) {
 			//
 			
@@ -176,7 +178,7 @@ public:
 	}
 
 private:
-	std::vector< Value_ptr<T>>vec_shp_Objects;
+	std::vector< Value_ptr<T>>vec_vlp_Objects;
 	std::map<Value_ptr<T>, std::int32_t*> map_objectIndexPtr;
 	std::vector<std::int32_t*> vec_objectIndex;
 };

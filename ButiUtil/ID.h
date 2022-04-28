@@ -37,7 +37,7 @@ template <typename T>
 class IDContainer {
 public:
 	void Clear() {
-		map_shp_resource.clear();
+		map_vlp_resource.clear();
 	}
 	ID<T> GetTag(const std::string& arg_key)const {
 		return ID<T>(make_value<std::string>(arg_key));
@@ -47,9 +47,9 @@ public:
 			std::cout << arg_tag.GetID() << ": This tag is unregisted." << std::endl;
 			return FailedValue();
 		}
-		if (map_shp_resource.count(arg_tag.GetID()))
+		if (map_vlp_resource.count(arg_tag.GetID()))
 		{
-			return map_shp_resource.at(arg_tag.GetID());
+			return map_vlp_resource.at(arg_tag.GetID());
 		}
 		else
 		{
@@ -58,8 +58,8 @@ public:
 	}
 	Value_ptr<T> FailedValue() {
 
-		if (map_shp_resource.size()) {
-			return map_shp_resource.begin()->second;
+		if (map_vlp_resource.size()) {
+			return map_vlp_resource.begin()->second;
 		}
 		else {
 			std::cout << "ResourceContainer is Empty." << std::endl;
@@ -69,35 +69,35 @@ public:
 	}
 	Value_ptr<T> GetValue(const std::string& arg_key) {
 
-		return map_shp_resource.at(arg_key);
+		return map_vlp_resource.at(arg_key);
 	}
 
 	bool Exist(const ID<T>& arg_tag)const {
 		if (arg_tag.IsEmpty()) {
 			return false;
 		}
-		return map_shp_resource.count(arg_tag.GetID());
+		return map_vlp_resource.count(arg_tag.GetID());
 	}
 	ID<T> AddValue(Value_ptr<T> arg_value, const std::string& arg_key) {
 		ID<T> output(make_value<std::string>(arg_key));
-		if (map_shp_resource.count(arg_key)) {
+		if (map_vlp_resource.count(arg_key)) {
 			return output;
 		}
-		map_shp_resource.emplace(arg_key, arg_value);
+		map_vlp_resource.emplace(arg_key, arg_value);
 		return output;
 	}
 
 	bool ContainValue(const std::string& arg_key) {
-		if (map_shp_resource.count(arg_key)) {
+		if (map_vlp_resource.count(arg_key)) {
 			return true;
 		}
 		return false;
 	}
 	void Remove(const std::string& arg_key) {
-		if (!map_shp_resource.count(arg_key)) {
+		if (!map_vlp_resource.count(arg_key)) {
 			return;
 		}
-		map_shp_resource.erase(arg_key);
+		map_vlp_resource.erase(arg_key);
 	}
 	void Remove(ID<T> arg_id) {
 		Remove(arg_id.GetID());
@@ -116,7 +116,7 @@ public:
 		ID<T> out;
 		if (searchStr.size() <= 0) {
 
-			for (auto itr = map_shp_resource.begin(), enditr = map_shp_resource.end(); itr != enditr; itr++) {
+			for (auto itr = map_vlp_resource.begin(), enditr = map_vlp_resource.end(); itr != enditr; itr++) {
 				if (GUI::Button(Util::ToUTF8(StringHelper::Remove(itr->first, arg_exclusionWord)).c_str())) {
 					out = ID<T>(itr->first);
 				}
@@ -131,7 +131,7 @@ public:
 			}
 		}
 		else {
-			for (auto itr = map_shp_resource.begin(), enditr = map_shp_resource.end(); itr != enditr; itr++) {
+			for (auto itr = map_vlp_resource.begin(), enditr = map_vlp_resource.end(); itr != enditr; itr++) {
 				if (!StringHelper::Contains(itr->first, searchStr)) {
 					continue;
 				}
@@ -153,8 +153,8 @@ public:
 
 	std::vector< Value_ptr<T>> GetResources() const {
 		std::vector< Value_ptr<T>> output;
-		output.reserve(map_shp_resource.size());
-		for (auto itr = map_shp_resource.begin(), end = map_shp_resource.end(); itr != end; itr++) {
+		output.reserve(map_vlp_resource.size());
+		for (auto itr = map_vlp_resource.begin(), end = map_vlp_resource.end(); itr != end; itr++) {
 			output.push_back(itr->second);
 		}
 
@@ -162,9 +162,9 @@ public:
 	}
 	std::vector< std::string> GetResourceNames()const {
 		std::vector< std::string> output;
-		output.reserve(map_shp_resource.size());
+		output.reserve(map_vlp_resource.size());
 
-		for (auto itr = map_shp_resource.begin(), end = map_shp_resource.end(); itr != end; itr++) {
+		for (auto itr = map_vlp_resource.begin(), end = map_vlp_resource.end(); itr != end; itr++) {
 			output.push_back(itr->first);
 		}
 
@@ -172,15 +172,15 @@ public:
 	}
 	std::vector< ID<T>> GetResourceTags()const {
 		std::vector< ID<T>> output;
-		output.reserve(map_shp_resource.size());
-		for (auto itr = map_shp_resource.begin(), end = map_shp_resource.end(); itr != end; itr++) {
+		output.reserve(map_vlp_resource.size());
+		for (auto itr = map_vlp_resource.begin(), end = map_vlp_resource.end(); itr != end; itr++) {
 			output.push_back(ID<T>(itr->first));
 		}
 
 		return output;
 	}
 private:
-	std::map< std::string, Value_ptr<T>> map_shp_resource;
+	std::map< std::string, Value_ptr<T>> map_vlp_resource;
 	std::string searchStr;
 
 };

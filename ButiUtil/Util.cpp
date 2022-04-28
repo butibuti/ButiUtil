@@ -92,15 +92,15 @@ void ButiEngine::ThrowButiException_Runtime(const std::string & meesage1, const 
 	throw std::runtime_error(outputMessage);
 }
 
-ButiEngine::Value_ptr< std::random_device> shp_rnd_device = nullptr;
-ButiEngine::Value_ptr<std::mt19937>shp_mt = nullptr;
-ButiEngine::Value_ptr< std::uniform_int_distribution<>> shp_randRange = nullptr;
+ButiEngine::Value_ptr< std::random_device> vlp_rnd_device = nullptr;
+ButiEngine::Value_ptr<std::mt19937>vlp_mt = nullptr;
+ButiEngine::Value_ptr< std::uniform_int_distribution<>> vlp_randRange = nullptr;
 
 void ButiEngine::ButiRandom::Initialize()
 {
-	shp_rnd_device = make_value<std::random_device>();
-	shp_mt = make_value<std::mt19937>((*shp_rnd_device)());
-	shp_randRange = make_value< std::uniform_int_distribution<>>(0, 1);
+	vlp_rnd_device = make_value<std::random_device>();
+	vlp_mt = make_value<std::mt19937>((*vlp_rnd_device)());
+	vlp_randRange = make_value< std::uniform_int_distribution<>>(0, 1);
 
 }
 
@@ -118,6 +118,6 @@ std::int32_t ButiEngine::ButiRandom::GetInt(const std::int32_t arg_min, const st
 		max = min;
 	}
 
-	shp_randRange = make_value< std::uniform_int_distribution<>>(min, max );
-	return (*shp_randRange)(*shp_mt) ;
+	vlp_randRange = make_value< std::uniform_int_distribution<>>(min, max );
+	return (*vlp_randRange)(*vlp_mt) ;
 }
