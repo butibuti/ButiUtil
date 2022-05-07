@@ -156,7 +156,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libs\Library</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\Library;$(SolutionDir)Libs\Library\ButiEngineHeader</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -175,7 +175,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libs\Library</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\Library;$(SolutionDir)Libs\Library\ButiEngineHeader</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

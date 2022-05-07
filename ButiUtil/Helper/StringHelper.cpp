@@ -11,58 +11,58 @@ StringHelper::~StringHelper()
 {
 }
 
-std::vector<std::string> StringHelper::Split(const std::string& source, const std::string& cuttingSouece)
+std::vector<std::string> StringHelper::Split(const std::string& arg_source, const std::string& cuttingSouece)
 {
 	auto output = std::vector<std::string>();
 	std::int32_t first = 0;
-	std::int32_t last = source.find_first_of(cuttingSouece);
+	std::int32_t last = arg_source.find_first_of(cuttingSouece);
 	if (last == std::string::npos) {
-		output.push_back(source);
+		output.push_back(arg_source);
 		return output;
 	}
-	while (first < source.size())
+	while (first < arg_source.size())
 	{
-		auto subString = source.substr(first, last - first);
+		auto subString = arg_source.substr(first, last - first);
 		output.push_back(subString);
 		first = last + 1;
-		last = source.find_first_of(cuttingSouece, first);
+		last = arg_source.find_first_of(cuttingSouece, first);
 		if (last == std::string::npos) {
-			last = source.size();
+			last = arg_source.size();
 		}
 	}
 	return output;
 }
 
-std::string StringHelper::Cut(const std::string& source, const std::string& frontCuttingSource, const std::string& backCuttingSouece, bool isContaisCutSource)
+std::string StringHelper::Cut(const std::string& arg_source, const std::string& frontCuttingSource, const std::string& backCuttingSouece, bool isContaisCutSource)
 {
-	auto pos = source.find(frontCuttingSource);
-	auto endPos = source.find(backCuttingSouece, pos + frontCuttingSource.length());
+	auto pos = arg_source.find(frontCuttingSource);
+	auto endPos = arg_source.find(backCuttingSouece, pos + frontCuttingSource.length());
 	if (pos == std::string::npos || endPos == std::string::npos) {
 		return "";
 	}
 	if (isContaisCutSource) {
-		return source.substr(pos, endPos - pos + backCuttingSouece.size());
+		return arg_source.substr(pos, endPos - pos + backCuttingSouece.size());
 	}
 	else
 	{
-		return source.substr(pos + frontCuttingSource.size(), endPos - pos - frontCuttingSource.size());
+		return arg_source.substr(pos + frontCuttingSource.size(), endPos - pos - frontCuttingSource.size());
 	}
 }
 
-std::string StringHelper::BackIdentifer(const std::string& source, const std::string& findSouece)
+std::string StringHelper::BackIdentifer(const std::string& arg_source, const std::string& findSouece)
 {
 	enum findProgress{findchar, initSpace,identiferchar,endspace };
 	findProgress progress = findchar;
 	std::int32_t spaceCount = 0;
 
-	auto endPos = source.find(findSouece);
+	auto endPos = arg_source.find(findSouece);
 	std::uint64_t pos=endPos;
 	if ( endPos == std::string::npos) {
 		return "";
 	}
 	while (progress != endspace||pos<0) {
 
-		char search = source[pos];
+		char search = arg_source[pos];
 		if (search == ' ' || search == '\t' || search == '\n') {
 			if (progress == findchar) {
 				progress = initSpace;
@@ -86,17 +86,17 @@ std::string StringHelper::BackIdentifer(const std::string& source, const std::st
 	}
 
 	{
-		return source.substr(pos , endPos -pos-spaceCount);
+		return arg_source.substr(pos , endPos -pos-spaceCount);
 	}
 }
 
 
-std::string StringHelper::Remove(const std::string& source, const std::string& removeSouece)
+std::string StringHelper::Remove(const std::string& arg_source, const std::string& removeSouece)
 {
 	if (removeSouece == "") {
-		return source;
+		return arg_source;
 	}
-	std::string output = source;
+	std::string output = arg_source;
 	std::uint64_t pos = output.find(removeSouece);
 	while (pos != std::string::npos)
 	{
@@ -106,16 +106,27 @@ std::string StringHelper::Remove(const std::string& source, const std::string& r
 	return output;
 }
 
-std::string StringHelper::Remove(const std::string& source, const std::uint32_t removeIndex, const std::uint32_t removeRange)
+std::string StringHelper::RemoveNull(const std::string& arg_source)
 {
-	std::string output = source;
+	std::string output = arg_source;
+	std::uint64_t pos = output.find('\0');
+	if (pos != std::string::npos)
+	{
+		output.erase(pos,arg_source.size()-pos);
+	}
+	return output;
+}
+
+std::string StringHelper::Remove(const std::string& arg_source, const std::uint32_t removeIndex, const std::uint32_t removeRange)
+{
+	std::string output = arg_source;
 	output.erase(removeIndex, removeRange);
 	return output;
 }
 
-std::string StringHelper::RemoveComment(const std::string& source)
+std::string StringHelper::RemoveComment(const std::string& arg_source)
 {
-	std::string output = source;
+	std::string output = arg_source;
 	auto commentStartPos = output.find("/*");
 	auto commentEndPos = output.find("*/");
 	while (commentStartPos != std::string::npos && commentEndPos != std::string::npos) {
@@ -138,53 +149,70 @@ std::string StringHelper::RemoveComment(const std::string& source)
 	return output;
 }
 
-bool StringHelper::Contains(const std::string& source, const std::string& findSource)
+bool StringHelper::Contains(const std::string& arg_source, const std::string& findSource)
 {
-	if (source.find(findSource) != std::string::npos)
+	if (arg_source.find(findSource) != std::string::npos)
 		return true;
 	else
 		return false;
 }
 
-bool StringHelper::Contains(const std::wstring& source, const std::wstring& findSource)
+bool StringHelper::Contains(const std::wstring& arg_source, const std::wstring& findSource)
 {
-	if (source.find(findSource) != std::string::npos)
+	if (arg_source.find(findSource) != std::string::npos)
 		return true;
 	else
 		return false;
 }
 
-bool StringHelper::Contains(const std::string& source, const char findSource)
+bool StringHelper::Contains(const std::string& arg_source, const char findSource)
 {
-	if (source.find(findSource) != std::string::npos)
+	if (arg_source.find(findSource) != std::string::npos)
 		return true;
 	else
 		return false;
 }
 
-void StringHelper::WStringToSafetyConvert(std::wstring& source)
+std::string StringHelper::Replace(const std::string& arg_source, const std::string& arg_before, const std::string& arg_after)
+{
+	if (arg_before == "") {
+		return arg_source;
+	}
+	std::string output = arg_source;
+	std::uint64_t pos = output.find(arg_before);
+	while (pos != std::string::npos)
+	{
+		output.erase(pos, arg_before.size());
+		output.insert(pos, arg_after);
+		pos = output.find(arg_before);
+	}
+	return output;
+}
+
+
+void StringHelper::WStringToSafetyConvert(std::wstring& arg_source)
 {
 	std::wstring backSlash = L"\\";
-	auto backSlashPos = source.find(backSlash);
+	auto backSlashPos = arg_source.find(backSlash);
 	while (backSlashPos != std::wstring::npos)
 	{
-		source.erase(backSlashPos, backSlash.size());
-		source.insert(backSlashPos, L"/");
-		backSlashPos = source.find(backSlash);
+		arg_source.erase(backSlashPos, backSlash.size());
+		arg_source.insert(backSlashPos, L"/");
+		backSlashPos = arg_source.find(backSlash);
 	}
 }
 
-std::string StringHelper::GetDirectory(const std::string& source)
+std::string StringHelper::GetDirectory(const std::string& arg_source)
 {
-	if (!Contains(source, "/")&&!Contains(source,backSlash)) {
+	if (!Contains(arg_source, "/")&&!Contains(arg_source,backSlash)) {
 		return "";
 	}
 
-	if (source[source.size() - 1] == '/'||source.substr(source.size()-2,2 ) == backSlash) {
-		return source;
+	if (arg_source[arg_source.size() - 1] == '/'||arg_source.substr(arg_source.size()-2,2 ) == backSlash) {
+		return arg_source;
 	}
 
-	auto splited = Split(source, "/");
+	auto splited = Split(arg_source, "/");
 	{
 		std::vector<std::string> backSlashSplit;
 		for (auto itr = splited.begin(), end = splited.end() ; itr != end; itr++) {
@@ -196,7 +224,7 @@ std::string StringHelper::GetDirectory(const std::string& source)
 	std::string out;
 
 	if ( splited.begin() == (splited.end() - 1)) {
-		return source;
+		return arg_source;
 	}
 
 	for (auto itr = splited.begin(),end= splited.end() - 1; itr != end; itr++) {
@@ -208,13 +236,13 @@ std::string StringHelper::GetDirectory(const std::string& source)
 	return out;
 }
 
-std::string StringHelper::GetFileName(const std::string& source, const bool isContainExtension)
+std::string StringHelper::GetFileName(const std::string& arg_source, const bool isContainExtension)
 {
-	if (!Contains(source, "/") && !Contains(source, backSlash)) {
+	if (!Contains(arg_source, "/") && !Contains(arg_source, backSlash)) {
 		return "";
 	}
 
-	auto splited = Split(source, "/");
+	auto splited = Split(arg_source, "/");
 	{
 		std::vector<std::string> backSlashSplit;
 		for (auto itr = splited.begin(), end = splited.end(); itr != end; itr++) {
@@ -236,8 +264,8 @@ std::string StringHelper::GetFileName(const std::string& source, const bool isCo
 	return out;
 }
 
-std::string StringHelper::RemoveExtension(const std::string& source)
+std::string StringHelper::RemoveExtension(const std::string& arg_source)
 {
-	return Split(source, ".").at(0);
+	return Split(arg_source, ".").at(0);
 }
 
