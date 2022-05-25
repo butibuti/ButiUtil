@@ -120,6 +120,7 @@ public:
 			}
 			else {
 				i = 0;
+				find.clear();
 			}
 		}
 		if (find == skipSource) {
@@ -128,6 +129,7 @@ public:
 			return true;
 		}
 		else {
+			fin.clear();
 			fin.seekg(((std::int32_t)currentPos), std::ios_base::beg);
 			return false;
 		}
