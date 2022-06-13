@@ -6,7 +6,7 @@
 #include"ButiMemorySystem/ButiMemorySystem/ButiPtr.h"
 namespace ButiEngine {
 namespace ImageFileIO {
-struct TextureResourceData {
+extern struct TextureResourceData {
 	~TextureResourceData();
 	std::int32_t width=0;
 	std::int32_t height=0;

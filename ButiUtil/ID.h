@@ -151,11 +151,11 @@ public:
 		return out;
 	}
 
-	std::vector< Value_ptr<T>> GetResources() const {
-		std::vector< Value_ptr<T>> output;
-		output.reserve(map_vlp_resource.size());
+	List< Value_ptr<T>> GetResources() const {
+		List< Value_ptr<T>> output;
+		output.Reserve(map_vlp_resource.size());
 		for (auto itr = map_vlp_resource.begin(), end = map_vlp_resource.end(); itr != end; itr++) {
-			output.push_back(itr->second);
+			output.Add(itr->second);
 		}
 
 		return output;

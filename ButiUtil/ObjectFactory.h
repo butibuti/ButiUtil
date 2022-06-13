@@ -1,13 +1,14 @@
 #pragma once
+#include"Util.h"
 #include"ButiMemorySystem/ButiMemorySystem/ButiPtr.h"
+#ifdef _BUTIENGINEBUILD
+#include"ButiEngineHeader/Header/Device/GUIWindowReaction.h"
+#endif // _BUTIENGINEBUILD
+
 #include<vector>
 #include<map>
 namespace ButiEngine {
 
-struct GUIWindowReaction {
-	bool isHovered = false;
-	bool isClosed = false;
-};
 class IObject : public enable_value_from_this<IObject>
 {
 	friend class ObjectFactory;
