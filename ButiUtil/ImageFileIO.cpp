@@ -23,17 +23,21 @@ void ButiEngine::ImageFileIO::OutputBMP(const std::string& arg_filePath,const vo
     stbi_write_bmp(arg_filePath.c_str(), width, height, size, arg_data);
 }
 
-void ButiEngine::ImageFileIO::InputPNG(const std::string& arg_filePath, TextureResourceData& arg_ref_output )
+void ButiEngine::ImageFileIO::InputImageFile(const std::string& arg_filePath, TextureResourceData& arg_ref_output )
 {
-
     arg_ref_output.rawData = stbi_load(arg_filePath.c_str(), &arg_ref_output.width, &arg_ref_output.height, &arg_ref_output.pixSize, 0);
-
     arg_ref_output.rowPitch = static_cast<size_t>(arg_ref_output.width * 4);
     arg_ref_output.slicePitch =static_cast<size_t>(arg_ref_output.width * arg_ref_output.height * 4);
     arg_ref_output.loadType = 0;
-    arg_ref_output.pixSize = 4;
 }
 
+void ButiEngine::ImageFileIO::InputImage(const void* arg_data, const std::int32_t arg_length, TextureResourceData& arg_ref_output)
+{
+    arg_ref_output.rawData = stbi_load_from_memory(reinterpret_cast<const std::uint8_t*> (arg_data),arg_length, &arg_ref_output.width, &arg_ref_output.height, &arg_ref_output.pixSize, 0);
+    arg_ref_output.rowPitch = static_cast<size_t>(arg_ref_output.width * 4);
+    arg_ref_output.slicePitch = static_cast<size_t>(arg_ref_output.width * arg_ref_output.height * 4);
+    arg_ref_output.loadType = 0;
+}
 
 void ButiEngine::ImageFileIO::InputTTF(const std::string& arg_filePath, const std::int32_t size, ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output )
 {

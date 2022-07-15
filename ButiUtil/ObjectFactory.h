@@ -112,23 +112,6 @@ public:
 		return make_value<T>(arg_value);
 	};
 
-
-	template<typename T, typename... Ts>
-	static inline Value_ptr<T> CreateFromCereal(const std::string& arg_filePath) {
-		Value_ptr<T> output= Value_ptr<T>();
-		if (Util::ExistFile(arg_filePath))
-			InputCereal(output, arg_filePath);
-		else {
-			output= make_value<T>();
-		}
-		if constexpr (std::is_base_of_v<IObject,T>) {
-			output->PreInitialize();
-			output->Initialize();
-			output->SetIsCereal(false);
-		}
-		return output;
-	};
-
 };
 
 template <typename T>

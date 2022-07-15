@@ -32,7 +32,7 @@ public:
 private:
 	std::string id ;
 };
-
+template <typename T> const std::string& TypeToDraggingObjectType() { static std::string output = "Other"; return output; }
 template <typename T>
 class IDContainer {
 public:
@@ -103,52 +103,37 @@ public:
 		Remove(arg_id.GetID());
 	}
 
-	template<class Archive>
-	void serialize(Archive& archive)
-	{
-	}
+	void ShowGUI(const std::string& arg_exclusionWord = "") {
 
-	ID<T> ShowGUI(GUI::GuiIO& arg_io, const std::string& arg_exclusionWord = "") {
-
+		GUI::BeginChild("##Tag"+TypeToDraggingObjectType<T>(), Vector2(0, 0), true);
 		GUI::Input("searchStr##"+std::string( typeid(T).name()), searchStr);
-
-
-		ID<T> out;
 		if (searchStr.size() <= 0) {
 
-			for (auto itr = map_vlp_resource.begin(), enditr = map_vlp_resource.end(); itr != enditr; itr++) {
-				if (GUI::Button(Util::ToUTF8(StringHelper::Remove(itr->first, arg_exclusionWord)).c_str())) {
-					out = ID<T>(itr->first);
-				}
+			for (auto itr : map_vlp_resource) {
+				GUI::Button(Util::ToUTF8(StringHelper::Remove(itr.first, arg_exclusionWord)));
 
-				if (GUI::IsItemActive()) {
-					auto p1 = arg_io.MouseClickedPos[0];
-					auto p2 = arg_io.MousePos;
-					GUI::Line(Vector2(p1.x, p1.y), Vector2(p2.x, p2.y), GUI::GetColorU32(GUI::GuiCol_::GuiCol_Button), 4.0f); // Draw a line between the button and the mouse cursor
-
-					out = ID<T>(itr->first);
+				if (GUI::BeginDragDropSource())
+				{
+					GUI::SetDragDropPayload(TypeToDraggingObjectType<T>().c_str(), itr.first.c_str(), (itr.first.size() + 1) * sizeof(char));
+					GUI::EndDragDropSource();
 				}
 			}
 		}
 		else {
-			for (auto itr = map_vlp_resource.begin(), enditr = map_vlp_resource.end(); itr != enditr; itr++) {
-				if (!StringHelper::Contains(itr->first, searchStr)) {
+			for (auto itr : map_vlp_resource) {
+				if (!StringHelper::Contains(itr.first, searchStr)) {
 					continue;
 				}
-				if (GUI::Button(Util::ToUTF8(itr->first).c_str())) {
-					out = ID<T>(itr->first);
-				}
-
-				if (GUI::IsItemActive()) {
-					auto p1 = arg_io.MouseClickedPos[0];
-					auto p2 = arg_io.MousePos;
-					GUI::Line(Vector2(p1.x, p1.y), Vector2(p2.x, p2.y), GUI::GetColorU32(GUI::GuiCol_::GuiCol_Button), 4.0f); // Draw a line between the button and the mouse cursor
-
-					out = ID<T>(itr->first);
+				GUI::Button(Util::ToUTF8(itr.first));
+				if (GUI::BeginDragDropSource())
+				{
+					GUI::SetDragDropPayload(TypeToDraggingObjectType<T>().c_str(), itr.first.c_str(), (itr.first.size() + 1) * sizeof(char));
+					GUI::EndDragDropSource();
 				}
 			}
 		}
-		return out;
+
+		GUI::EndChild();
 	}
 
 	List< Value_ptr<T>> GetResources() const {

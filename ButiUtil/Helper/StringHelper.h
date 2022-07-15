@@ -22,8 +22,10 @@ public:
 	static std::string Replace(const std::string& arg_source, const std::string& arg_before,const std::string& arg_after);
 	static void WStringToSafetyConvert(std::wstring& arg_source);
 	static std::string GetDirectory(const std::string& arg_source);
+	static std::string RemoveFrontDirectory(const std::string& arg_source);
 	static std::string GetFileName(const std::string& arg_source, const bool arg_isContainExtension);
 	static std::string RemoveExtension(const std::string& arg_source);
+	static std::string GetExtension(const std::string& arg_source);
 private:
 	StringHelper();
 };

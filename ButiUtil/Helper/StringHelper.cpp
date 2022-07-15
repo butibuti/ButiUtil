@@ -236,6 +236,7 @@ std::string StringHelper::GetDirectory(const std::string& arg_source)
 	return out;
 }
 
+
 std::string StringHelper::GetFileName(const std::string& arg_source, const bool isContainExtension)
 {
 	if (!Contains(arg_source, "/") && !Contains(arg_source, backSlash)) {
@@ -264,8 +265,22 @@ std::string StringHelper::GetFileName(const std::string& arg_source, const bool 
 	return out;
 }
 
+std::string StringHelper::RemoveFrontDirectory(const std::string& arg_source)
+{
+	auto dir = GetDirectory(arg_source);
+	auto splitedDir = Split(dir, "/"); dir.clear();
+	for (std::int32_t index = 1; index < splitedDir.size(); index++) {
+		dir += splitedDir[index]+"/";
+	}
+	return dir+GetFileName(arg_source,true);
+}
 std::string StringHelper::RemoveExtension(const std::string& arg_source)
 {
 	return Split(arg_source, ".").at(0);
+}
+std::string StringHelper::GetExtension(const std::string& arg_source)
+{
+	auto splited = Split(arg_source, ".");
+	return splited.at(splited.size() - 1);
 }
 

@@ -42,7 +42,9 @@ private:
 extern class BinaryReader
 {
 public:
-	bool ReadStart(const std::string& filePath);
+	BinaryReader(){}
+	BinaryReader(const std::string& arg_filePath) { ReadStart(arg_filePath); }
+	bool ReadStart(const std::string& arg_filePath);
 	void ReadEnd();
 	std::string ReadString();
 	std::string ReadString_All();
@@ -190,12 +192,13 @@ public:
 		return fin.tellg();
 	}
 	std::int32_t GetReamainSize();
-	BinaryReader() {};
 private:
 	std::ifstream fin;
 };
 extern class BinaryWriter {
 public:
+	BinaryWriter(){}
+	BinaryWriter(const std::string& arg_filePath) { WriteStart(arg_filePath); }
 	bool WriteStart(const std::string& filePath);
 	void WriteEnd();
 	void WriteString(const std::string& write);
@@ -256,7 +259,6 @@ public:
 	inline std::streampos GetCurrentPos() {
 		return fout.tellp();
 	}
-	BinaryWriter() {};
 private:
 	std::ofstream fout;
 };
