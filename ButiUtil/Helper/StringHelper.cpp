@@ -239,7 +239,8 @@ std::string StringHelper::GetDirectory(const std::string& arg_source)
 
 std::string StringHelper::GetFileName(const std::string& arg_source, const bool isContainExtension)
 {
-	if (!Contains(arg_source, "/") && !Contains(arg_source, backSlash)) {
+	if ((!Contains(arg_source, "/") && !Contains(arg_source, backSlash))
+		||(arg_source[arg_source.size()-1]=='/' )||( arg_source[arg_source.size() - 1] == '\\')) {
 		return "";
 	}
 
