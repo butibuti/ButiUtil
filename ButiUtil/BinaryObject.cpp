@@ -39,6 +39,7 @@ char* ButiEngine::BinaryReader_Memory::ReadCharactor()
 {
 	char* out = reinterpret_cast<char*>(malloc(GetReamainSize()));
 	memcpy_s(out, GetReamainSize(),m_current, GetReamainSize());
+	m_current += GetReamainSize();
 	m_currentIndex += GetReamainSize();
 	return out;
 }
@@ -49,25 +50,71 @@ void* ButiEngine::BinaryReader_Memory::ReadData(const std::int32_t size)
 	void* out = malloc(readSize);
 	memcpy_s ((char*)out, readSize,m_current,readSize);
 	m_current+= readSize;
+	m_currentIndex += readSize;
 	return out;
 }
 
 void ButiEngine::BinaryReader_Memory::ReadData(char* out, const std::int32_t size)
 {
+	std::int32_t readSize = size < 0 ? GetReamainSize() : size;
+	memcpy_s((char*)out, readSize, m_current, readSize);
+	m_current += readSize;
+	m_currentIndex += readSize;
 }
 
 void ButiEngine::BinaryReader_Memory::ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)
 {
+	unsigned char* inBuffer;
+	inBuffer = (unsigned char*)malloc(arg_compressedSize);
+	z_stream z;
+	z.zalloc = Z_NULL;
+	z.zfree = Z_NULL;
+	z.opaque = Z_NULL;
+
+	std::int32_t res = inflateInit(&z);
+	z.next_in = NULL;
+	z.avail_in = 0;
+	z.next_out = outBuffer;
+	z.avail_out = uncompressedSize;
+
+	memcpy_s((char*)inBuffer, arg_compressedSize,m_current,arg_compressedSize);
+	m_current += arg_compressedSize;
+	m_currentIndex += arg_compressedSize;
+	z.next_in = inBuffer;
+	z.avail_in = arg_compressedSize;
+	res = inflate(&z, Z_NO_FLUSH);
+	inflateEnd(&z);
+	free(inBuffer);
 }
 
 std::wstring ButiEngine::BinaryReader_Memory::ReadWCharactor(const std::uint32_t count)
 {
-	return std::wstring();
+	wchar_t* readChars = (wchar_t*)malloc(count * sizeof(wchar_t));
+
+	memcpy_s((char*)readChars, count * sizeof(wchar_t),m_current, count * sizeof(wchar_t));
+	m_current += count * sizeof(wchar_t);
+	m_currentIndex += count * sizeof(wchar_t);
+
+	std::wstring out;
+	for (std::uint32_t i = 0; i < count; i++) {
+		if (!readChars[i]) {
+			break;
+		}
+		out += readChars[i];
+	}
+	free(readChars);
+	return out;
 }
 
 std::wstring ButiEngine::BinaryReader_Memory::ReadShift_jis(const std::uint32_t count)
 {
-	return std::wstring();
+	char* readChars = (char*)malloc(count * sizeof(char));
+	memcpy_s((char*)readChars, count * sizeof(char), m_current, count * sizeof(char));
+	m_current += count * sizeof(char);
+	m_currentIndex += count * sizeof(char);
+	std::string out = std::string(readChars);
+	free(readChars);
+	return Util::StringToWString(out);
 }
 
 
@@ -145,10 +192,7 @@ void ButiEngine::BinaryReader_File::ReadDefrateData(const std::uint32_t arg_comp
 {
 	unsigned char* inBuffer;
 	inBuffer = (unsigned char*)malloc(arg_compressedSize);
-
 	z_stream z;
-
-
 	z.zalloc = Z_NULL;
 	z.zfree = Z_NULL;
 	z.opaque = Z_NULL;
