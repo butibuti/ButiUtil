@@ -1,10 +1,77 @@
 #include"stdafx.h"
-#include "BinaryReader.h"
+#include "BinaryObject.h"
 #include"../../zlib/zlib.h"
 #pragma comment(lib,"ZDll.lib")
 #include"Util.h"
 #include<iostream>
-bool ButiEngine::BinaryReader::ReadStart(const std::string & filePath)
+
+
+std::string ButiEngine::BinaryReader_Memory::ReadString()
+{
+	std::int32_t size = ReadVariable<std::int32_t>();
+	return ReadCharactor(size);
+}
+
+std::string ButiEngine::BinaryReader_Memory::ReadString_All()
+{
+	return  std::string(m_headPtr, m_headPtr+m_size);
+}
+
+std::string ButiEngine::BinaryReader_Memory::ReadCharactor(const std::uint32_t count)
+{
+	char* readChars = (char*)malloc(count);
+	memcpy_s(readChars, count, m_current, count);
+
+	std::string out;
+
+	for (std::uint32_t i = 0; i < count; i++) {
+		if (readChars[i] > 9) {
+			out += readChars[i];
+			continue;
+		}
+		out += readChars[i];
+	}
+	delete readChars;
+	return out;
+}
+
+char* ButiEngine::BinaryReader_Memory::ReadCharactor()
+{
+	char* out = reinterpret_cast<char*>(malloc(GetReamainSize()));
+	memcpy_s(out, GetReamainSize(),m_current, GetReamainSize());
+	m_currentIndex += GetReamainSize();
+	return out;
+}
+
+void* ButiEngine::BinaryReader_Memory::ReadData(const std::int32_t size)
+{
+	std::int32_t readSize = size < 0 ? GetReamainSize() : size;
+	void* out = malloc(readSize);
+	memcpy_s ((char*)out, readSize,m_current,readSize);
+	m_current+= readSize;
+	return out;
+}
+
+void ButiEngine::BinaryReader_Memory::ReadData(char* out, const std::int32_t size)
+{
+}
+
+void ButiEngine::BinaryReader_Memory::ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)
+{
+}
+
+std::wstring ButiEngine::BinaryReader_Memory::ReadWCharactor(const std::uint32_t count)
+{
+	return std::wstring();
+}
+
+std::wstring ButiEngine::BinaryReader_Memory::ReadShift_jis(const std::uint32_t count)
+{
+	return std::wstring();
+}
+
+
+bool ButiEngine::BinaryReader_File::ReadStart(const std::string & filePath)
 {
 	fin=std::ifstream (filePath, std::ios::in | std::ios::binary);
 	if (!fin) {
@@ -15,23 +82,23 @@ bool ButiEngine::BinaryReader::ReadStart(const std::string & filePath)
 	return true;
 }
 
-void ButiEngine::BinaryReader::ReadEnd()
+void ButiEngine::BinaryReader_File::ReadEnd()
 {
 	fin.close();
 }
 
-std::string ButiEngine::BinaryReader::ReadString()
+std::string ButiEngine::BinaryReader_File::ReadString()
 {
 	std::int32_t size =ReadVariable<std::int32_t>();
 	return ReadCharactor(size);
 }
 
-std::string ButiEngine::BinaryReader::ReadString_All()
+std::string ButiEngine::BinaryReader_File::ReadString_All()
 {
 	return  std::string(std::istreambuf_iterator<char>(fin),std::istreambuf_iterator<char>());
 }
 
-std::string ButiEngine::BinaryReader::ReadCharactor(const std::uint32_t count)
+std::string ButiEngine::BinaryReader_File::ReadCharactor(const std::uint32_t count)
 {
 	char* readChars=(char*)malloc(count);
 
@@ -50,7 +117,7 @@ std::string ButiEngine::BinaryReader::ReadCharactor(const std::uint32_t count)
 	return out;
 }
 
-char* ButiEngine::BinaryReader::ReadCharactor()
+char* ButiEngine::BinaryReader_File::ReadCharactor()
 {
 	auto all= std::string(std::istreambuf_iterator<char>(fin),
 		std::istreambuf_iterator<char>());
@@ -60,28 +127,21 @@ char* ButiEngine::BinaryReader::ReadCharactor()
 	return out;
 }
 
-void* ButiEngine::BinaryReader::ReadData(const std::int32_t size)
+void* ButiEngine::BinaryReader_File::ReadData(const std::int32_t size)
 {
 	std::int32_t readSize = size < 0? GetReamainSize():  size;
-
-
 	void* out = malloc(readSize);
-
 	fin.read((char*)out, readSize);
-
 	return out;
 }
 
-void ButiEngine::BinaryReader::ReadData(char* out, const std::int32_t size)
+void ButiEngine::BinaryReader_File::ReadData(char* out, const std::int32_t size)
 {
-
 	std::int32_t readSize = size < 0 ? GetReamainSize() : size;
-	out =(char*) malloc(readSize);
-
-	fin.read((char*)out, readSize);
+	fin.read(out, readSize);
 }
 
-void ButiEngine::BinaryReader::ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)
+void ButiEngine::BinaryReader_File::ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)
 {
 	unsigned char* inBuffer;
 	inBuffer = (unsigned char*)malloc(arg_compressedSize);
@@ -113,7 +173,7 @@ void ButiEngine::BinaryReader::ReadDefrateData(const std::uint32_t arg_compresse
 }
 
 
-std::wstring ButiEngine::BinaryReader::ReadWCharactor(const std::uint32_t count)
+std::wstring ButiEngine::BinaryReader_File::ReadWCharactor(const std::uint32_t count)
 {
 	wchar_t* readChars = (wchar_t*)malloc(count* sizeof(wchar_t));
 
@@ -131,7 +191,7 @@ std::wstring ButiEngine::BinaryReader::ReadWCharactor(const std::uint32_t count)
 	return out;
 }
 
-std::wstring ButiEngine::BinaryReader::ReadShift_jis(const std::uint32_t count)
+std::wstring ButiEngine::BinaryReader_File::ReadShift_jis(const std::uint32_t count)
 {
 	char* readChars = (char*)malloc(count * sizeof(char));
 
@@ -144,7 +204,7 @@ std::wstring ButiEngine::BinaryReader::ReadShift_jis(const std::uint32_t count)
 	return Util::StringToWString(out);
 }
 
-std::int32_t ButiEngine::BinaryReader::GetReamainSize()
+std::int32_t ButiEngine::BinaryReader_File::GetReamainSize()
 {
 	auto current = fin.tellg();
 	fin.seekg(0,std::ios::end);
@@ -272,7 +332,7 @@ std::uint64_t ButiEngine::BinaryHelper::Swap64bit(const std::uint64_t & input)
 }
 
 
-bool ButiEngine::BinaryWriter::WriteStart(const std::string & filePath)
+bool ButiEngine::BinaryWriter_File::WriteStart(const std::string & filePath)
 {
 	fout = std::ofstream(filePath, std::ios::out | std::ios::binary);
 	if (!fout) {
@@ -282,28 +342,28 @@ bool ButiEngine::BinaryWriter::WriteStart(const std::string & filePath)
 	return true;
 }
 
-void ButiEngine::BinaryWriter::WriteEnd()
+void ButiEngine::BinaryWriter_File::WriteEnd()
 {
 	fout.close();
 }
 
-void ButiEngine::BinaryWriter::WriteString(const std::string& write)
+void ButiEngine::BinaryWriter_File::WriteString(const std::string& write)
 {
 	WriteVariable<std::int32_t>(write.size());
 	fout.write(write.c_str(), write.size());
 }
 
-void ButiEngine::BinaryWriter::WriteCharactor(const std::string & write)
+void ButiEngine::BinaryWriter_File::WriteCharactor(const std::string & write)
 {
 	fout.write(write.c_str(), write.size());
 }
 
-void ButiEngine::BinaryWriter::WriteCharactor(const char* write, const std::uint32_t size)
+void ButiEngine::BinaryWriter_File::WriteCharactor(const char* write, const std::uint32_t size)
 {
 	fout.write(write,size);
 }
 
-void ButiEngine::BinaryWriter::WriteWCharactor(const std::wstring & write)
+void ButiEngine::BinaryWriter_File::WriteWCharactor(const std::wstring & write)
 {
 	fout.write((char*)write.c_str(), write.size()*sizeof(wchar_t));
 }

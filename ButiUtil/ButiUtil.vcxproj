@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryReader.cpp" />
+    <ClCompile Include="BinaryObject.cpp" />
     <ClCompile Include="CSVReader.cpp" />
     <ClCompile Include="CSVWriter.cpp" />
     <ClCompile Include="Helper\StringHelper.cpp" />
@@ -32,7 +32,7 @@
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryReader.h" />
+    <ClInclude Include="BinaryObject.h" />
     <ClInclude Include="ButiPtrCereal.h" />
     <ClInclude Include="CSVData.h" />
     <ClInclude Include="Easing.h" />
