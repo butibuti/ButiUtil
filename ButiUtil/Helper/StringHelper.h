@@ -26,6 +26,7 @@ public:
 	static std::string GetFileName(const std::string& arg_source, const bool arg_isContainExtension);
 	static std::string RemoveExtension(const std::string& arg_source);
 	static std::string GetExtension(const std::string& arg_source);
+	static bool ExtensionCheck(const std::string& arg_source,const std::string& arg_extension);
 private:
 	StringHelper();
 };

@@ -277,11 +277,23 @@ std::string StringHelper::RemoveFrontDirectory(const std::string& arg_source)
 }
 std::string StringHelper::RemoveExtension(const std::string& arg_source)
 {
-	return Split(arg_source, ".").at(0);
+	auto splited = Split(arg_source, ".");
+	if (splited.size() == 1) { return splited[0]; }
+	std::string output;
+	for (std::int32_t index = 0, size = splited.size(); index < size - 1;index++) {
+		output +=index!=size-2? splited[index]+".": splited[index];
+	}
+	return output;
 }
 std::string StringHelper::GetExtension(const std::string& arg_source)
 {
 	auto splited = Split(arg_source, ".");
 	return splited.at(splited.size() - 1);
+}
+
+bool StringHelper::ExtensionCheck(const std::string& arg_source, const std::string& arg_extension)
+{
+	auto splited = Split(arg_source, ".");
+	return splited.at(splited.size() - 1)==arg_extension;
 }
 

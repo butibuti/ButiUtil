@@ -33,8 +33,9 @@ extern void OutputBMP(const std::string& arg_filePath,const void* arg_data, cons
 /// <param name="arg_filePath"></param>
 /// <param name="arg_ref_output"></param>
 extern void InputImageFile(const std::string& arg_filePath, TextureResourceData& arg_ref_output);
-extern void InputImage(const void* arg_data, const std::int32_t arg_length,TextureResourceData& arg_ref_output);
-extern void InputTTF(const std::string& arg_filePath, const std::int32_t size,ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output);
+extern void InputImage(const void* arg_data, const std::int32_t arg_dataSize,TextureResourceData& arg_ref_output);
+extern void InputTTFFile(const std::string& arg_filePath, const std::int32_t size, ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output);
+extern void InputTTF(const void* arg_data,const std::int64_t arg_dataSize,const std::string& arg_fontName, const std::int32_t size,ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output);
 
 
 }

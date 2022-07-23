@@ -31,31 +31,36 @@ void ButiEngine::ImageFileIO::InputImageFile(const std::string& arg_filePath, Te
     arg_ref_output.loadType = 0;
 }
 
-void ButiEngine::ImageFileIO::InputImage(const void* arg_data, const std::int32_t arg_length, TextureResourceData& arg_ref_output)
+void ButiEngine::ImageFileIO::InputImage(const void* arg_data, const std::int32_t arg_dataSize, TextureResourceData& arg_ref_output)
 {
-    arg_ref_output.rawData = stbi_load_from_memory(reinterpret_cast<const std::uint8_t*> (arg_data),arg_length, &arg_ref_output.width, &arg_ref_output.height, &arg_ref_output.pixSize, 0);
+    arg_ref_output.rawData = stbi_load_from_memory(reinterpret_cast<const std::uint8_t*> (arg_data), arg_dataSize, &arg_ref_output.width, &arg_ref_output.height, &arg_ref_output.pixSize, 0);
     arg_ref_output.rowPitch = static_cast<size_t>(arg_ref_output.width * 4);
     arg_ref_output.slicePitch = static_cast<size_t>(arg_ref_output.width * arg_ref_output.height * 4);
     arg_ref_output.loadType = 0;
 }
 
-void ButiEngine::ImageFileIO::InputTTF(const std::string& arg_filePath, const std::int32_t size, ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output )
+void ButiEngine::ImageFileIO::InputTTFFile(const std::string& arg_filePath, const std::int32_t size, ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output )
 {
     if (!Util::ExistFile(arg_filePath)) {
         return ;
     }
     arg_ref_output.vlp_texResData = ObjectFactory::Create<TextureResourceData>();
-
-    ButiFont::LoadTTF(arg_filePath.c_str(), size, arg_lang, &arg_ref_output.vlp_texResData->width, &arg_ref_output.vlp_texResData->height, &arg_ref_output.vlp_texResData->rawData, &arg_ref_output.p_fontInfo);
-
-     
-
-    
+    ButiFont::LoadTTFFile(arg_filePath.c_str(), size, arg_lang, &arg_ref_output.vlp_texResData->width, &arg_ref_output.vlp_texResData->height, &arg_ref_output.vlp_texResData->rawData, &arg_ref_output.p_fontInfo);
     arg_ref_output.vlp_texResData->loadType = 1;
     arg_ref_output.vlp_texResData->pixSize = sizeof(char);
     arg_ref_output.vlp_texResData->rowPitch = static_cast<size_t>(arg_ref_output.vlp_texResData->width);
     arg_ref_output.vlp_texResData->slicePitch = static_cast<size_t>(arg_ref_output.vlp_texResData->width * arg_ref_output.vlp_texResData->height);
 
+}
+
+void ButiEngine::ImageFileIO::InputTTF(const void* arg_data, const std::int64_t arg_dataSize,const std::string& arg_fontName, const std::int32_t size, ButiFont::FontLanguage arg_lang, FontResourceData& arg_ref_output)
+{
+    arg_ref_output.vlp_texResData = ObjectFactory::Create<TextureResourceData>();
+    ButiFont::LoadTTF(arg_fontName.c_str(),reinterpret_cast<const char*>( arg_data),arg_dataSize, size, arg_lang, &arg_ref_output.vlp_texResData->width, &arg_ref_output.vlp_texResData->height, &arg_ref_output.vlp_texResData->rawData, &arg_ref_output.p_fontInfo);
+    arg_ref_output.vlp_texResData->loadType = 1;
+    arg_ref_output.vlp_texResData->pixSize = sizeof(char);
+    arg_ref_output.vlp_texResData->rowPitch = static_cast<size_t>(arg_ref_output.vlp_texResData->width);
+    arg_ref_output.vlp_texResData->slicePitch = static_cast<size_t>(arg_ref_output.vlp_texResData->width * arg_ref_output.vlp_texResData->height);
 }
 
 ButiEngine::ImageFileIO::TextureResourceData::~TextureResourceData()

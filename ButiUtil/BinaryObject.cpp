@@ -32,6 +32,8 @@ std::string ButiEngine::BinaryReader_Memory::ReadCharactor(const std::uint32_t c
 		out += readChars[i];
 	}
 	delete readChars;
+	m_current += count;
+	m_currentIndex += count;
 	return out;
 }
 
@@ -129,7 +131,7 @@ bool ButiEngine::BinaryReader_File::ReadStart(const std::string & filePath)
 	return true;
 }
 
-void ButiEngine::BinaryReader_File::ReadEnd()
+ButiEngine::BinaryReader_File::~BinaryReader_File()
 {
 	fin.close();
 }
@@ -386,7 +388,7 @@ bool ButiEngine::BinaryWriter_File::WriteStart(const std::string & filePath)
 	return true;
 }
 
-void ButiEngine::BinaryWriter_File::WriteEnd()
+ButiEngine::BinaryWriter_File::~BinaryWriter_File()
 {
 	fout.close();
 }
@@ -410,4 +412,8 @@ void ButiEngine::BinaryWriter_File::WriteCharactor(const char* write, const std:
 void ButiEngine::BinaryWriter_File::WriteWCharactor(const std::wstring & write)
 {
 	fout.write((char*)write.c_str(), write.size()*sizeof(wchar_t));
+}
+void ButiEngine::BinaryWriter_File::Write(const std::stringstream& arg_stream)
+{
+	fout << arg_stream.str();
 }

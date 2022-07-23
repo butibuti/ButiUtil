@@ -7,6 +7,7 @@
 #include<string>
 #include <stack>
 #include<fstream>
+#include<sstream>
 namespace ButiEngine {
 
 extern class BinaryHelper {
@@ -198,10 +199,10 @@ private:
 extern class BinaryReader_File :public IBinaryReader
 {
 public:
-	BinaryReader_File(){}
+	BinaryReader_File() {}
 	BinaryReader_File(const std::string& arg_filePath) { ReadStart(arg_filePath); }
+	~BinaryReader_File();
 	bool ReadStart(const std::string& arg_filePath);
-	void ReadEnd();
 	std::string ReadString()override;
 	std::string ReadString_All()override;
 	std::string ReadCharactor(const std::uint32_t count)override;
@@ -302,15 +303,15 @@ private:
 };
 extern class BinaryWriter_File {
 public:
-	BinaryWriter_File(){}
+	BinaryWriter_File() {}
 	BinaryWriter_File(const std::string& arg_filePath) { WriteStart(arg_filePath); }
+	~BinaryWriter_File();
 	bool WriteStart(const std::string& filePath);
-	void WriteEnd();
 	void WriteString(const std::string& write);
 	void WriteCharactor(const std::string& write);
 	void WriteCharactor(const char* write, const std::uint32_t size);
 	void WriteWCharactor(const  std::wstring& write);
-
+	void Write(const std::stringstream& arg_stream);
 	template<typename T>
 	inline void WriteVariable(T  writeVar) {
 
