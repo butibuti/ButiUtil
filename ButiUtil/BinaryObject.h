@@ -107,7 +107,7 @@ public:
 };
 extern class BinaryReader_Memory:public IBinaryReader {
 public:
-	BinaryReader_Memory(char* arg_ptr, const std::uint64_t arg_size):m_headPtr(arg_ptr),m_current(arg_ptr),m_size(arg_size){}
+	BinaryReader_Memory(const char* arg_ptr, const std::uint64_t arg_size):m_headPtr(arg_ptr),m_current(arg_ptr),m_size(arg_size){}
 	std::string ReadString()override;
 	std::string ReadString_All()override;
 	std::string ReadCharactor(const std::uint32_t count)override;
@@ -193,7 +193,7 @@ public:
 
 	std::int32_t GetReamainSize()override { return m_size - m_currentIndex; }
 private:
-	char* m_headPtr,*m_current;
+	const char* m_headPtr,*m_current;
 	std::uint64_t m_size, m_currentIndex=0;
 };
 extern class BinaryReader_File :public IBinaryReader

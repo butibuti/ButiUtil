@@ -11,15 +11,11 @@ namespace ButiEngine {
 
 class IObject : public enable_value_from_this<IObject>
 {
-	friend class ObjectFactory;
 	bool isCereal = true;
 protected:
 	IObject() {}
 	virtual ~IObject() {}
 
-	void SetIsCereal(bool arg_created) {
-		isCereal = arg_created;
-	};
 public:
 	template<typename T>
 	inline Value_ptr<T> GetThis() {
@@ -85,6 +81,10 @@ public:
 	virtual void PreInitialize() {}
 	virtual void Initialize() {}
 	virtual void ShowGUI() {  }
+
+	void SetIsCereal(bool arg_created) {
+		isCereal = arg_created;
+	};
 #ifdef BUTIGUI_H
 
 
@@ -95,24 +95,23 @@ public:
 	void UnRegistEditorGUI() { GUI::UnRegistEditorGUIObject(GetThis<IObject>()); }
 #endif // BUTIGUI_H
 };
-class ObjectFactory {
-public:
-	template<typename T, typename... Ts>
-	static inline Value_ptr<T> Create(Ts&&... params) {
-		Value_ptr<T> output = make_value<T>(params...);
-		if constexpr (std::is_base_of_v<IObject,T>) {
-			output->PreInitialize();
-			output->Initialize();
-			output->SetIsCereal(false);
-		}
-		return output;
-	};
-	template<typename T>
-	static inline Value_ptr<T> CreateCopy(const T& arg_value) {
-		return make_value<T>(arg_value);
-	};
-
+namespace ObjectFactory {
+template<typename T, typename... Ts>
+static inline Value_ptr<T> Create(Ts&&... params) {
+	Value_ptr<T> output = make_value<T>(params...);
+	if constexpr (std::is_base_of_v<IObject, T>) {
+		output->PreInitialize();
+		output->Initialize();
+		output->SetIsCereal(false);
+	}
+	return output;
 };
+template<typename T>
+static inline Value_ptr<T> CreateCopy(const T& arg_value) {
+	return make_value<T>(arg_value);
+};
+
+}
 
 template <typename T>
 class ObjectRegistContainer {
