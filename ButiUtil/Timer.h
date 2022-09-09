@@ -77,7 +77,7 @@ public:
 		if (!isOn) {
 			return false;
 		}
-		currentCountFrame += 1.0f;//GameDevice::WorldSpeed;
+		currentCountFrame += GetGlobalSpeed();
 		if (currentCountFrame >= maxCountFrame) {
 			currentCountFrame = 0;
 			return true;
@@ -88,7 +88,7 @@ public:
 		if (!isOn) {
 			return false;
 		}
-		currentCountFrame += 1.0f;//GameDevice::WorldSpeed;
+		currentCountFrame += GetGlobalSpeed();
 		if (currentCountFrame >= maxCountFrame) {
 			return true;
 		}
