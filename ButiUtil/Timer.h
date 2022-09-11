@@ -28,9 +28,9 @@ public:
 		return maxCountFrame - currentCountFrame;
 	}
 	float GetMaxCountFrame()const { return maxCountFrame; }
-	float GetCurrentCountFrame()const { return maxCountFrame; }
+	float GetCurrentCountFrame()const { return currentCountFrame; }
 	float& GetMaxCountFrame(){ return maxCountFrame; }
-	float& GetCurrentCountFrame(){ return maxCountFrame; }
+	float& GetCurrentCountFrame(){ return currentCountFrame; }
 	static inline  float GetGlobalSpeed() { return st_globalSpeed; }
 	static inline void SetGlobalSpeed(const float arg_speed) { st_globalSpeed = arg_speed; }
 protected:
