@@ -66,6 +66,13 @@ public:
 		}
 		return false;
 	}
+	template<class Archive>
+	void serialize(Archive& archive)
+	{
+		archive(currentCountFrame);
+		archive(maxCountFrame);
+		archive(isOn);
+	}
 };
 
 class RelativeTimer :public Timer
