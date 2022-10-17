@@ -275,6 +275,15 @@ std::string StringHelper::RemoveFrontDirectory(const std::string& arg_source)
 	}
 	return dir+GetFileName(arg_source,true);
 }
+std::string StringHelper::RemoveLastDirectory(const std::string& arg_source)
+{
+	auto dir = GetDirectory(arg_source);
+	auto splitedDir = Split(dir, "/"); dir.clear();
+	for (std::int32_t index = 0; index < splitedDir.size()-1; index++) {
+		dir += splitedDir[index] + "/";
+	}
+	return dir + GetFileName(arg_source, true);
+}
 std::string StringHelper::RemoveExtension(const std::string& arg_source)
 {
 	auto splited = Split(arg_source, ".");
@@ -295,5 +304,46 @@ bool StringHelper::ExtensionCheck(const std::string& arg_source, const std::stri
 {
 	auto splited = Split(arg_source, ".");
 	return splited.at(splited.size() - 1)==arg_extension;
+}
+
+std::int8_t StringHelper::WordToMonth(const std::string& arg_source)
+{
+	if (arg_source == "Jan") {
+		return 1;
+	}
+	if (arg_source == "Feb") {
+		return 2;
+	}
+	if (arg_source == "Mar") {
+		return 3;
+	}
+	if (arg_source == "Apr") {
+		return 4;
+	}
+	if (arg_source == "May") {
+		return 5;
+	}
+	if (arg_source == "Jun") {
+		return 6;
+	}
+	if (arg_source == "Jul") {
+		return 7;
+	}
+	if (arg_source == "Aug") {
+		return 8;
+	}
+	if (arg_source == "Sep") {
+		return 9;
+	}
+	if (arg_source == "Oct") {
+		return 10;
+	}
+	if (arg_source == "Nov") {
+		return 11;
+	}
+	if (arg_source == "Dec") {
+		return 12;
+	}
+	return -1;
 }
 

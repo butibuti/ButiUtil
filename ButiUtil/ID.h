@@ -1,4 +1,7 @@
 #pragma once
+#ifndef _BUTI_ID_H
+#define _BUTI_ID_H
+
 #include<memory>
 #include<map>
 #include<vector>
@@ -27,7 +30,7 @@ public:
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(id);
+		ARCHIVE_BUTI(id);
 	}
 private:
 	std::string id ;
@@ -139,26 +142,43 @@ public:
 	List< Value_ptr<T>> GetResources() const {
 		List< Value_ptr<T>> output;
 		output.Reserve(m_map_vlp_resource.size());
-		for (auto itr = m_map_vlp_resource.begin(), end = m_map_vlp_resource.end(); itr != end; itr++) {
-			output.Add(itr->second);
+		for (auto itr : m_map_vlp_resource) {
+			output.Add(itr.second);
 		}
 
 		return output;
 	}
-	std::vector< std::string> GetResourceNames()const {
+	List< std::string> GetResourceNames()const {
+		List< std::string> output;
+		output.Reserve(m_map_vlp_resource.size());
+		for (auto itr : m_map_vlp_resource) {
+			output.Add(itr.first);
+		}
+
+		return output;
+	}
+	List< ID<T>> GetResourceTags()const {
+		List< ID<T>> output;
+		output.Reserve(m_map_vlp_resource.size());
+		for (auto itr : m_map_vlp_resource) {
+			output.Add(ID<T>(itr.first));
+		}
+		return output;
+	}
+
+	std::vector< std::string> GetResourceNames_vec()const {
 		std::vector< std::string> output;
 		output.reserve(m_map_vlp_resource.size());
-
-		for (auto itr = m_map_vlp_resource.begin(), end = m_map_vlp_resource.end(); itr != end; itr++) {
-			output.push_back(itr->first);
+		for (auto itr : m_map_vlp_resource) {
+			output.push_back(itr.first);
 		}
 
 		return output;
 	}
-	std::vector< ID<T>> GetResourceTags()const {
+	std::vector< ID<T>> GetResourceTags_vec()const {
 		std::vector< ID<T>> output;
 		output.reserve(m_map_vlp_resource.size());
-		for (auto itr = m_map_vlp_resource.begin(), end = m_map_vlp_resource.end(); itr != end; itr++) {
+		for (auto itr : m_map_vlp_resource) {
 			output.push_back(ID<T>(itr->first));
 		}
 
@@ -217,10 +237,29 @@ public:
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(map_values);
+		ARCHIVE_BUTI(map_values);
 	}
 private:
 	std::unordered_map<std::string, ID<T>> map_values;
 
 };
 }
+
+namespace std {
+
+template<typename T>
+struct hash<ButiEngine::ID<T>> {
+public:
+	size_t operator()(const ButiEngine::ID<T>& data)const {
+
+		std::size_t seed = 0;
+		ButiEngine::hash_combine(seed, data.GetID());
+
+
+		return seed;
+
+	}
+};
+}
+
+#endif // !_BUTI_ID_H

@@ -3,6 +3,29 @@
 #pragma once
 #include <memory>
 #include"ObjectFactory.h"
+
+#ifndef CEREAL_NVP
+#define CEREAL_NVP(T) ::cereal::make_nvp(#T, T)
+#endif // !CEREAL_NVP
+
+#ifndef ARCHIVE_BUTI
+#define ARCHIVE_BUTI(v)\
+	archive(CEREAL_NVP(v));
+#endif // !ARCHIVE_BUTI
+
+#ifndef ARCHIVE2_BUTI
+#define ARCHIVE2_BUTI(v,v2)\
+	archive(CEREAL_NVP(v),CEREAL_NVP(v2));
+#endif // !ARCHIVE2_BUTI
+#ifndef ARCHIVE3_BUTI
+#define ARCHIVE3_BUTI(v,v2,v3)\
+	archive(CEREAL_NVP(v),CEREAL_NVP(v2),CEREAL_NVP(v3));
+#endif // !ARCHIVE3_BUTI
+#ifndef ARCHIVE4_BUTI
+#define ARCHIVE4_BUTI(v,v2,v3,v4)\
+	archive(CEREAL_NVP(v),CEREAL_NVP(v2),CEREAL_NVP(v3),CEREAL_NVP(v4));
+#endif // !ARCHIVE4_BUTI
+
 namespace ButiEngine {
 
 class Timer :public IObject
@@ -69,9 +92,9 @@ public:
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(currentCountFrame);
-		archive(maxCountFrame);
-		archive(isOn);
+		ARCHIVE_BUTI(currentCountFrame);
+		ARCHIVE_BUTI(maxCountFrame);
+		ARCHIVE_BUTI(isOn);
 	}
 };
 
@@ -113,9 +136,9 @@ public:
 	template<class Archive>
 	void serialize(Archive& archive)
 	{
-		archive(currentCountFrame);
-		archive(maxCountFrame);
-		archive(isOn);
+		ARCHIVE_BUTI(currentCountFrame);
+		ARCHIVE_BUTI(maxCountFrame);
+		ARCHIVE_BUTI(isOn);
 	}
 };
 
