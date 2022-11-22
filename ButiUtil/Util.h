@@ -61,6 +61,10 @@ std::string ToUTF8(const std::string& arg_srcSjis);
 std::string UTF8ToMultiByte(const std::string& arg_srcUTF8);
 void MakeDirectory(const std::string& arg_directoryName);
 bool ExistFile(const std::string& arg_filePath);
+void SetLogDirectory(const std::string& arg_logPath);
+const std::string& GetLogDirectory();
+void Log(const std::string& arg_logStr);
+
 template<typename T>
 static std::wstring GetWStringTypeName() {
 	std::wstring outputClassName;
@@ -112,6 +116,7 @@ public:
 namespace ButiTime {
 timespec* timespecSubstruction(const struct timespec* A, const struct timespec* B, struct timespec* C);
 
+std::string GetYear_Month_Day_Hour_Min_Sec();
 }
 
 static void ThrowButiException_Runtime(const std::wstring& message1, const std::wstring& message2, const std::wstring& message3);
@@ -162,7 +167,6 @@ void hash_combine(size_t& seed, T const& v) {
 inline std::string U8(const std::string& arg_str) {
 	return Util::ToUTF8(arg_str);
 }
-
 }
 
 #endif

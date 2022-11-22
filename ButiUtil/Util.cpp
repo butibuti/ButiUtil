@@ -136,6 +136,25 @@ bool ButiEngine::Util::ExistFile(const std::string& arg_filePath) {
 	std::ifstream checkedFile(arg_filePath);
 	return checkedFile.is_open();
 }
+std::string g_logPath = "";
+void ButiEngine::Util::SetLogDirectory(const std::string& arg_logPath)
+{
+	g_logPath = arg_logPath;
+	MakeDirectory(StringHelper::GetDirectory( arg_logPath));
+}
+
+const std::string& ButiEngine::Util::GetLogDirectory()
+{
+	return g_logPath;
+}
+
+void ButiEngine::Util::Log(const std::string& arg_logStr)
+{
+	if (g_logPath.size()) {
+		std::ofstream os(g_logPath,std::ios::app);
+		os << arg_logStr << std::endl;
+	}
+}
 
 void ButiEngine::ThrowButiException_Runtime(const std::wstring & message1, const std::wstring & message2, const std::wstring & message3)
 {//throw runtime_error function
@@ -285,4 +304,23 @@ timespec* ButiEngine::ButiTime::timespecSubstruction(const timespec* A, const ti
 	}
 
 	return C;
+}
+
+std::string ButiEngine::ButiTime::GetYear_Month_Day_Hour_Min_Sec()
+{
+	auto currentTime = std::chrono::system_clock::now();
+	std::time_t t = std::chrono::system_clock::to_time_t(currentTime);
+	constexpr std::int32_t ctime_sBuffSize = 26;
+	char buff[ctime_sBuffSize];
+	ctime_s(buff, ctime_sBuffSize, &t);
+	auto output = StringHelper::Replace(StringHelper::Replace(std::string(buff, 24), " ", "_"), ":", "_");
+	auto splited = StringHelper::Split(output, "_");
+	splited.erase(splited.begin());
+	auto month = StringHelper::WordToMonth(*splited.begin());
+	splited.erase(splited.begin());
+	splited.erase(splited.begin());
+	splited.insert(splited.begin(), std::to_string(month));
+	output = *(splited.end() - 1);
+	for (auto itr = splited.begin(); itr != splited.end() - 1; itr++) { output += "_" + *itr; }
+	return output;
 }
