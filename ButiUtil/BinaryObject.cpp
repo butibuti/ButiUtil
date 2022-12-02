@@ -120,14 +120,15 @@ std::wstring ButiEngine::BinaryReader_Memory::ReadShift_jis(const std::uint32_t 
 }
 
 
-bool ButiEngine::BinaryReader_File::ReadStart(const std::string & filePath)
+bool ButiEngine::BinaryReader_File::ReadStart(const std::string & arg_filePath)
 {
-	fin=std::ifstream (filePath, std::ios::in | std::ios::binary);
+	fin=std::ifstream (arg_filePath, std::ios::in | std::ios::binary);
 	if (!fin) {
-		std::cout<< filePath << "‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ"<<std::endl;
+		std::cout<< arg_filePath << "‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ"<<std::endl;
 
 		return false;
 	}
+	m_filePath = arg_filePath;
 	return true;
 }
 

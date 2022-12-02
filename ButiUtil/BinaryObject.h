@@ -48,7 +48,8 @@ public:
 	virtual char* ReadCharactor() = 0;
 	virtual void* ReadData(const  std::int32_t size) = 0;
 	virtual void ReadData(char* out, const std::int32_t size) = 0;
-
+	virtual const void* GetAllData()const=0;
+	virtual std::string GetFilePath() const = 0;
 	virtual void ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer) = 0;
 	template<typename T>
 	inline void ReadDefratedArrayData(const std::uint32_t arg_compressedSize, const std::uint32_t arraySize, std::vector< T>& out) {
@@ -114,7 +115,8 @@ public:
 	char* ReadCharactor()override;
 	void* ReadData(const  std::int32_t size)override;
 	void ReadData(char* out, const std::int32_t size)override;
-
+	std::string GetFilePath() const override{ return ""; }
+	const void* GetAllData()const override { return  m_headPtr; }
 	virtual void ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)override;
 	virtual std::wstring ReadWCharactor(const std::uint32_t count)override;
 	virtual std::wstring ReadShift_jis(const std::uint32_t count)override;
@@ -200,7 +202,7 @@ extern class BinaryReader_File :public IBinaryReader
 {
 public:
 	BinaryReader_File() {}
-	BinaryReader_File(const std::string& arg_filePath) { ReadStart(arg_filePath); }
+	BinaryReader_File(const std::string& arg_filePath):m_filePath(arg_filePath) { ReadStart(arg_filePath); }
 	~BinaryReader_File();
 	bool ReadStart(const std::string& arg_filePath);
 	std::string ReadString()override;
@@ -210,6 +212,8 @@ public:
 	void* ReadData(const  std::int32_t size)override;
 	void ReadData(char* out, const std::int32_t size)override;
 
+	std::string GetFilePath() const override { return m_filePath; }
+	const void* GetAllData()const override { return  nullptr; }
 	virtual void ReadDefrateData(const std::uint32_t arg_compressedSize, std::uint32_t uncompressedSize, const std::uint32_t arraySize, unsigned char* outBuffer)override;
 	virtual std::wstring ReadWCharactor(const std::uint32_t count)override;
 	virtual std::wstring ReadShift_jis(const std::uint32_t count)override;
@@ -300,6 +304,7 @@ public:
 	std::int32_t GetReamainSize()override ;
 private:
 	std::ifstream fin;
+	std::string m_filePath = "";
 };
 extern class BinaryWriter_File {
 public:
