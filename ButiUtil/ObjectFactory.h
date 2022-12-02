@@ -24,14 +24,8 @@ public:
 			return Ptr;
 		}
 		else {
-			std::wstring str(L"Can't cast this to");
-			str += Util::GetWStringTypeName<T>();
-			str += L" type.";
-			throw ButiException(
-				str,
-				L"if( ! dynamic_value_ptr_cast<T>(value_from_this()) )",
-				L"IObject::GetThis()"
-			);
+			std::string str = typeid(T).name();
+			throw ButiException("Can't cast to "+str);
 		}
 		return nullptr;
 
@@ -43,14 +37,8 @@ public:
 			return Ptr;
 		}
 		else {
-			std::wstring str(L"Can't cast this to");
-			str += Util::GetWStringTypeName<T>();
-			str += L" type.";
-			throw ButiException(
-				str,
-				L"if( ! dynamic_cast<T>(this) )",
-				L"IObject::GetThis()"
-			);
+			std::string str = typeid(T).name();
+			throw ButiException("Can't cast this to"+str);
 		}
 		return nullptr;
 
