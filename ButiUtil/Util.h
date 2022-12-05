@@ -2,6 +2,8 @@
 #define UTIL_H
 #include<string>
 #include"Exception.h"
+
+
 struct timespec;
 namespace ButiEngine {
 namespace BitFlag {
