@@ -132,6 +132,12 @@ void ButiEngine::Util::MakeDirectory(const std::string& arg_directoryName)
 	}
 }
 
+void ButiEngine::Util::RemDirectory(const std::string& arg_directoryName)
+{
+	if (!arg_directoryName.size()) { return; }
+	std::filesystem::remove_all(arg_directoryName.c_str());
+}
+
 bool ButiEngine::Util::ExistFile(const std::string& arg_filePath) {
 	std::ifstream checkedFile(arg_filePath);
 	return checkedFile.is_open();

@@ -62,6 +62,7 @@ void MultiBytetoWString(const std::string& src, std::wstring& dest);
 std::string ToUTF8(const std::string& arg_srcSjis);
 std::string UTF8ToMultiByte(const std::string& arg_srcUTF8);
 void MakeDirectory(const std::string& arg_directoryName);
+void RemDirectory(const std::string& arg_directoryName);
 bool ExistFile(const std::string& arg_filePath);
 void SetLogDirectory(const std::string& arg_logPath);
 const std::string& GetLogDirectory();
