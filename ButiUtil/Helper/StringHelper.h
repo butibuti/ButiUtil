@@ -29,6 +29,7 @@ public:
 	static std::string GetExtension(const std::string& arg_source);
 	static bool ExtensionCheck(const std::string& arg_source, const std::string& arg_extension);
 	static std::int8_t WordToMonth(const std::string& arg_source);
+	static std::string GetLastDirectory(const std::string& arg_source);
 private:
 	StringHelper();
 };

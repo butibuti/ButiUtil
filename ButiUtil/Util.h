@@ -67,6 +67,7 @@ bool ExistFile(const std::string& arg_filePath);
 void SetLogDirectory(const std::string& arg_logPath);
 const std::string& GetLogDirectory();
 void Log(const std::string& arg_logStr);
+void ExecuteCommandLine(const std::string& arg_line, const bool arg_async = false);
 
 template<typename T>
 static std::wstring GetWStringTypeName() {

@@ -1,7 +1,7 @@
 #include"stdafx.h"
 #include "StringHelper.h"
 
-static const std::string backSlash = "\\";
+static const char backSlash = '\\';
 StringHelper::StringHelper()
 {
 }
@@ -208,15 +208,17 @@ std::string StringHelper::GetDirectory(const std::string& arg_source)
 		return "";
 	}
 
-	if (arg_source[arg_source.size() - 1] == '/'||arg_source.substr(arg_source.size()-2,2 ) == backSlash) {
+	if (arg_source[arg_source.size() - 1] == '/'|| arg_source[arg_source.size() - 1] == backSlash) {
 		return arg_source;
 	}
-
-	auto splited = Split(arg_source, "/");
+	auto source = arg_source;
+	source = Replace(source, "\\", "/");
+	auto splited = Split(source, "/");
 	{
 		std::vector<std::string> backSlashSplit;
 		for (auto itr = splited.begin(), end = splited.end() ; itr != end; itr++) {
-			auto sp = Split(*itr, backSlash);
+
+			auto sp = Split(*itr,std::string( &backSlash,1));
 			backSlashSplit.insert(backSlashSplit.end(), sp.begin(), sp.end());
 		}
 		splited = backSlashSplit;
@@ -243,12 +245,12 @@ std::string StringHelper::GetFileName(const std::string& arg_source, const bool 
 		||(arg_source[arg_source.size()-1]=='/' )||( arg_source[arg_source.size() - 1] == '\\')) {
 		return "";
 	}
-
-	auto splited = Split(arg_source, "/");
+	auto source = Replace(arg_source, "\\", "/");
+	auto splited = Split(source, "/");
 	{
 		std::vector<std::string> backSlashSplit;
 		for (auto itr = splited.begin(), end = splited.end(); itr != end; itr++) {
-			auto sp = Split(*itr, backSlash);
+			auto sp = Split(*itr,std::string( &backSlash,1));
 			backSlashSplit.insert(backSlashSplit.end(), sp.begin(), sp.end());
 		}
 		splited = backSlashSplit;
@@ -345,5 +347,12 @@ std::int8_t StringHelper::WordToMonth(const std::string& arg_source)
 		return 12;
 	}
 	return -1;
+}
+
+std::string StringHelper::GetLastDirectory(const std::string& arg_source)
+{
+	auto dir = GetDirectory(arg_source);
+	auto splitedDir = Split(dir, "/");
+    return splitedDir.size()? splitedDir[splitedDir.size()-1] : "";
 }
 

@@ -12,6 +12,7 @@
 #include<ctime>
 #define WIN32_LEAN_AND_MEAN
 #include<Windows.h>
+#include<iostream>
 
 void ButiEngine::Util::WStringtoMultiByte(const std::wstring & src, std::string & dest)
 {
@@ -157,9 +158,13 @@ const std::string& ButiEngine::Util::GetLogDirectory()
 void ButiEngine::Util::Log(const std::string& arg_logStr)
 {
 	if (g_logPath.size()) {
-		std::ofstream os(g_logPath,std::ios::app);
+		std::ofstream os(g_logPath, std::ios::app);
 		os << arg_logStr << std::endl;
 	}
+}
+void ButiEngine::Util::ExecuteCommandLine(const std::string& arg_line, const bool arg_async)
+{
+	std::system(arg_line.c_str());
 }
 
 void ButiEngine::ThrowButiException_Runtime(const std::wstring & message1, const std::wstring & message2, const std::wstring & message3)
